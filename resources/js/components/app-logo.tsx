@@ -9,7 +9,7 @@ export default function AppLogo() {
             <div className="ml-1 grid flex-1 text-left text-sm">
                 <span className="mb-0.5 truncate text-[30px] leading-tight font-semibold">
                     Jet
-                    <span className="text-[#ae6ff7]">store</span>
+                    <span className="text-(--purple-color)">store</span>
                 </span>
             </div>
         </>

@@ -95,6 +95,10 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.87 0 0);
+
+    --purple-color: #593dc5;
+    --cards-color: #f2f2f2;
+    --dark-cards-color: #0f0f0f;
 }
 
 .dark {
@@ -139,5 +143,15 @@
 
     body {
         @apply bg-background text-foreground;
+    }
+}
+
+@layer components {
+    .bg-purple {
+        @apply bg-(--purple-color);
+    }
+
+    .dark-card-bg {
+        @apply bg-(--dark-cards-color);
     }
 }

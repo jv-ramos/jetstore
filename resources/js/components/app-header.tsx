@@ -188,7 +188,7 @@ export function AppHeader({ canRegister = true, breadcrumbs = [] }: Props) {
                             <Input
                                 type="text"
                                 placeholder="Search..."
-                                className="hidden w-130 lg:block"
+                                className="hidden w-130 lg:block bg-[#161616]"
                             />
                             <Button
                                 variant="ghost"
