@@ -142,7 +142,7 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
       <div
         className={cn(
           "flex",
-          orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
+          orientation === "horizontal" ? "-ml-4" : "",
           className
         )}
         {...props}
@@ -161,7 +161,7 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="carousel-item"
       className={cn(
         "min-w-0 shrink-0 grow-0 basis-full",
-        orientation === "horizontal" ? "pl-4" : "pt-4",
+        orientation === "horizontal" ? "pl-4" : "",
         className
       )}
       {...props}
@@ -169,13 +169,13 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function CarouselPrevious({
-  className,
-  variant = "outline",
-  size = "icon",
-  ...props
-}: React.ComponentProps<typeof Button>) {
-  const { orientation, scrollPrev, canScrollPrev } = useCarousel()
+// function CarouselPrevious({
+//   className,
+//   variant = "outline",
+//   size = "icon",
+//   ...props
+// }: React.ComponentProps<typeof Button>) {
+  // const { orientation, scrollPrev, canScrollPrev } = useCarousel()
 
   // return (
   //   <Button
@@ -197,15 +197,15 @@ function CarouselPrevious({
   //     <span className="sr-only">Previous slide</span>
   //   </Button>
   // )
-}
-
-function CarouselNext({
-  className,
-  variant = "outline",
-  size = "icon",
-  ...props
-}: React.ComponentProps<typeof Button>) {
-  const { orientation, scrollNext, canScrollNext } = useCarousel()
+// }
+//
+// function CarouselNext({
+//   className,
+//   variant = "outline",
+//   size = "icon",
+//   ...props
+// }: React.ComponentProps<typeof Button>) {
+  // const { orientation, scrollNext, canScrollNext } = useCarousel()
 
   // return (
   //   <Button
@@ -227,13 +227,13 @@ function CarouselNext({
   //     <span className="sr-only">Next slide</span>
   //   </Button>
   // )
-}
+// }
 
 export {
   type CarouselApi,
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
+  // CarouselPrevious,
+  // CarouselNext,
 }

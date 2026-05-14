@@ -1,15 +1,9 @@
 import { Head } from '@inertiajs/react';
-import { Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-} from '@/components/ui/carousel';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import { Skeleton } from '@/components/ui/skeleton';
 import { dashboard } from '@/routes';
+import MainCarousel from '../components/custom/mainCarousel';
 import { fetchProducts } from '../services/api';
 
 export default function Dashboard() {
@@ -25,7 +19,6 @@ export default function Dashboard() {
 
             try {
                 const data = await fetchProducts('');
-                console.log('Fetched products:', data);
                 setProducts(data);
 
                 const shuffled = [...data];
@@ -44,69 +37,6 @@ export default function Dashboard() {
         }
         loadProducts();
     }, []);
-
-    const handleNavigate = (product: any) => {
-        navigate(`/products/${product.id}`);
-    };
-
-    function CarrouselComponent({ array }: { array: any[] }) {
-        return (
-            <Carousel
-                opts={{
-                    align: 'start',
-                }}
-                className="w-full"
-            >
-                <CarouselContent className="-ml-2 md:-ml-4">
-                    {array.slice(0, 20).map((product) => (
-                        <CarouselItem
-                            key={product.id}
-                            className="pl-2 md:basis-1/3 md:pl-4 lg:basis-1/6"
-                            onClick={
-                                () =>
-                                    console.log(
-                                        'Clicked product:',
-                                        product,
-                                    ) /* Placeholder for click action */
-                            }
-                        >
-                            <Link
-                                href={`/products/${product.id}`}
-                                key={product.id}
-                            >
-                                <Card className="h-48 dark:bg-[#0f0f0f] bg-[#f2f2f2] ">
-                                    <CardContent className="flex h-full flex-col p-4">
-                                        {/* Container da imagem com altura fixa e sombra flutuante */}
-                                        <div className="mb-3 flex h-32 w-full items-center justify-center">
-                                            <img
-                                                src={product.image}
-                                                alt={product.title}
-                                                className="max-h-14 max-w-14 object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.25)]"
-                                                style={{
-                                                    filter: 'drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2))',
-                                                }}
-                                            />
-                                        </div>
-
-                                        {/* Título alinhado à esquerda */}
-                                        <h2 className="mb-2 line-clamp-2 text-left text-xs font-semibold">
-                                            {product.title?.slice(0, 20) +
-                                                '...' || 'Loading...'}
-                                        </h2>
-
-                                        {/* Preço alinhado à esquerda */}
-                                        <p className="text-left text-sm font-bold text-[#ae6ff7]">
-                                            ${product.price}
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                            </Link>
-                        </CarouselItem>
-                    ))}
-                </CarouselContent>
-            </Carousel>
-        );
-    }
 
     return (
         <>
@@ -139,7 +69,7 @@ export default function Dashboard() {
                     ) : error ? (
                         <p className="text-red-500">Error loading products.</p>
                     ) : (
-                        <CarrouselComponent array={products} />
+                        <MainCarousel array={products} />
                     )}
                 </div>
 
@@ -163,7 +93,7 @@ export default function Dashboard() {
                     ) : error ? (
                         <p className="text-red-500">Error loading products.</p>
                     ) : (
-                        <CarrouselComponent array={randomizedProducts} />
+                        <MainCarousel array={randomizedProducts} />
                     )}
                 </div>
             </div>
