@@ -66,7 +66,6 @@ export default function ProductDetails() {
     const [error, setError] = useState(null);
     const [product, setProduct] = useState(null);
     const [counter, setCounter] = useState(1);
-    console.log('Counter state:', counter);
 
     function handleCounter(operation: boolean) {
         if (operation) {
@@ -149,6 +148,7 @@ export default function ProductDetails() {
                                     <Button
                                         variant="outline"
                                         className="bg-purple ml-4 w-full hover:bg-[#ae6ff7]"
+                                        onclick={() => {}}
                                     >
                                         Add to Cart
                                     </Button>

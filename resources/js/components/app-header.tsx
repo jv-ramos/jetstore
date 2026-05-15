@@ -92,7 +92,7 @@ const rightBottomNavItems: NavItem[] = [
     },
     {
         title: 'Cart',
-        href: '#',
+        href: 'cart',
         icon: ShoppingCart,
     },
 ];
