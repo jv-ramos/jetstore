@@ -1,4 +1,5 @@
 import { Form, Head } from '@inertiajs/react';
+import { useState } from 'react';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
@@ -10,6 +11,22 @@ import { login } from '@/routes';
 import { store } from '@/routes/register';
 
 export default function Register() {
+    const [cpf, setCpf] = useState('');
+
+    const formatCPF = (value: string) => {
+        return value
+            .replace(/\D/g, '') // Remove tudo que não é dígito
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+            .replace(/(-\d{2})\d+?$/, '$1');
+    };
+
+    const handleCPFChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formatted = formatCPF(e.target.value);
+        setCpf(formatted);
+    };
+
     return (
         <>
             <Head title="Register" />
@@ -36,6 +53,26 @@ export default function Register() {
                                 />
                                 <InputError
                                     message={errors.name}
+                                    className="mt-2"
+                                />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="cpf">CPF</Label>
+                                <Input
+                                    id="cpf"
+                                    type="text"
+                                    required
+                                    autoFocus
+                                    tabIndex={1}
+                                    name="cpf"
+                                    value={cpf}
+                                    onChange={handleCPFChange}
+                                    placeholder="000.000.000-00"
+                                    maxLength={14}
+                                />
+                                <InputError
+                                    message={errors.cpf}
                                     className="mt-2"
                                 />
                             </div>
