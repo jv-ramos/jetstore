@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Settings\AddressController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,12 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/settings/address', [AddressController::class, 'edit'])
+        ->name('settings.address.edit');
+
+    Route::patch('/settings/address', [AddressController::class, 'update'])
+        ->name('settings.address.update');
 
     Route::get('settings/security', [SecurityController::class, 'edit'])->name('security.edit');
 
