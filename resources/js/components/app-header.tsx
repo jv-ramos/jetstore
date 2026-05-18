@@ -92,7 +92,7 @@ const rightBottomNavItems: NavItem[] = [
     },
     {
         title: 'Cart',
-        href: '#',
+        href: '/cart',
         icon: ShoppingCart,
     },
 ];
@@ -151,10 +151,9 @@ export function AppHeader({ canRegister = true, breadcrumbs = [] }: Props) {
 
                                         <div className="flex flex-col space-y-4">
                                             {rightBottomNavItems.map((item) => (
-                                                <a
+                                                <Link
                                                     key={item.title}
-                                                    href={toUrl(item.href)}
-                                                    target="_blank"
+                                                    href={item.href}
                                                     rel="noopener noreferrer"
                                                     className="flex items-center space-x-2 font-medium"
                                                 >
@@ -162,7 +161,7 @@ export function AppHeader({ canRegister = true, breadcrumbs = [] }: Props) {
                                                         <item.icon className="h-5 w-5" />
                                                     )}
                                                     <span>{item.title}</span>
-                                                </a>
+                                                </Link>
                                             ))}
                                         </div>
                                     </div>
@@ -248,9 +247,8 @@ export function AppHeader({ canRegister = true, breadcrumbs = [] }: Props) {
                                     {rightBottomNavItems.map((item) => (
                                         <Tooltip key={item.title}>
                                             <TooltipTrigger>
-                                                <a
-                                                    href={toUrl(item.href)}
-                                                    target="_blank"
+                                                <Link
+                                                    href={item.href}
                                                     rel="noopener noreferrer"
                                                     className="group inline-flex h-9 w-9 items-center justify-center rounded-md bg-transparent p-0 text-sm font-medium text-accent-foreground ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
                                                 >
@@ -260,7 +258,7 @@ export function AppHeader({ canRegister = true, breadcrumbs = [] }: Props) {
                                                     {item.icon && (
                                                         <item.icon className="size-5 opacity-80 group-hover:opacity-100" />
                                                     )}
-                                                </a>
+                                                </Link>
                                             </TooltipTrigger>
                                             <TooltipContent>
                                                 <p>{item.title}</p>

@@ -48,4 +48,21 @@ trait ProfileValidationRules
                 : Rule::unique(User::class)->ignore($userId),
         ];
     }
+
+        /**
+        * Get the validation rules used to validate user CPFs.
+        *
+        * @return array<int, ValidationRule|array<mixed>|string>
+        */
+    protected function cpfRules(?int $userId = null): array
+    {
+        return [
+            'nullable',
+            'string',
+            'max:14',
+            $userId === null
+                ? Rule::unique(User::class)
+                : Rule::unique(User::class)->ignore($userId),
+        ];
+    }
 }
