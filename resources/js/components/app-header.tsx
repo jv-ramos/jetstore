@@ -103,6 +103,7 @@ const activeItemStyles =
 export function AppHeader({ canRegister = true, breadcrumbs = [] }: Props) {
     const page = usePage();
     const { auth } = page.props;
+
     const getInitials = useInitials();
     const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
 
@@ -187,7 +188,7 @@ export function AppHeader({ canRegister = true, breadcrumbs = [] }: Props) {
                             <Input
                                 type="text"
                                 placeholder="Search..."
-                                className="hidden w-130 lg:block bg-[#161616]"
+                                className="hidden w-130 bg-[#161616] lg:block"
                             />
                             <Button
                                 variant="ghost"
@@ -271,7 +272,10 @@ export function AppHeader({ canRegister = true, breadcrumbs = [] }: Props) {
                                 {auth.user ? (
                                     <>
                                         <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
+                                            <DropdownMenuTrigger
+                                                asChild
+                                                className="align-start justify-start"
+                                            >
                                                 <Button
                                                     variant="ghost"
                                                     className="size-10 rounded-full p-1"
@@ -294,11 +298,24 @@ export function AppHeader({ canRegister = true, breadcrumbs = [] }: Props) {
                                                             )}
                                                         </AvatarFallback>
                                                     </Avatar>
+                                                    <div className="flex flex-col">
+                                                        <div className="text-start">
+                                                            {auth.user.name}
+                                                        </div>
+                                                        <div className="text-sm text-neutral-500">
+                                                            {auth.address
+                                                                ? auth.address.street.slice(
+                                                                      0,
+                                                                      20,
+                                                                  ) + '...'
+                                                                : null}
+                                                        </div>
+                                                    </div>
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent
                                                 className="w-56"
-                                                align="end"
+                                                align="start"
                                             >
                                                 {auth.user && (
                                                     <UserMenuContent
