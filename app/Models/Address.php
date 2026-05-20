@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable(
+    'user_id',
     'CEP',
+    'state',
     'city',
+    'neighbourhood',
     'street',
     'number',
     'complement',
