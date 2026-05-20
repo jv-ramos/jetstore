@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
+
+Route::get('products', [ProductController::class, 'index'])->name('product.index');
 
 Route::inertia('/', 'dashboard', [
     'canRegister' => Features::enabled(Features::registration()),
