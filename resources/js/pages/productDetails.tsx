@@ -1,4 +1,5 @@
 import { usePage } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { Heart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,7 +14,7 @@ import { fetchProductById } from '../services/api';
 
 const pageIcons: NavItem[] = [
     {
-        title: 'Add to Favorites',
+        name: 'Add to Favorites',
         href: '#',
         icon: Heart,
     },
@@ -35,7 +36,7 @@ function MainImage({ product }: { product: any }) {
             <span>
                 {pageIcons.map((item) => (
                     <a
-                        key={item.title}
+                        key={item.name}
                         href={toUrl(item.href)}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -57,14 +58,23 @@ function MainImage({ product }: { product: any }) {
     );
 }
 
-export default function ProductDetails() {
-    const { url } = usePage();
+function handleAddToCart(productId: string, counter: number) {
+    router.post('/cart/add', {
+        product_id: productId,
+        quantity: counter,
+    });
+}
 
-    const productId = url.split('/').pop();
+export default function ProductDetails() {
+    // const { url } = usePage();
+    const { product } = usePage().props;
+
+    // const productId = url.split('/').pop();
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [product, setProduct] = useState(null);
+    const [productFound, setProductFound] = useState(null);
+    const [fakeApiProductFound, setfakeApiProductFound] = useState(null);
     const [counter, setCounter] = useState(1);
 
     function handleCounter(operation: boolean) {
@@ -82,21 +92,24 @@ export default function ProductDetails() {
             setError(null);
 
             try {
-                const data = await fetchProductById(productId);
-                setProduct(data);
+                const data = product;
+                const fakeApiProduct = await fetchProductById(productId);
+
+                setProductFound(data);
+                setfakeApiProductFound(fakeApiProduct);
             } catch (error) {
                 console.error('Error loading products:', error);
             } finally {
                 setLoading(false);
             }
         }
-        loadProduct(productId);
-    }, [productId]);
+        loadProduct(product.id);
+    }, [product.id]);
 
     return (
         <Card className="w-full border-0 bg-transparent">
             <CardContent className="p-0">
-                {product ? (
+                {productFound && fakeApiProductFound ? (
                     <>
                         <div className="mb-4 flex max-h-[80vh] flex-row overflow-hidden p-4">
                             <div>
@@ -106,38 +119,42 @@ export default function ProductDetails() {
                                         {loading ? (
                                             <Skeleton className="h-10 w-10 rounded" />
                                         ) : (
-                                            miniatureImage(product)
+                                            miniatureImage(productFound)
                                         )}
                                     </VerticalCarousel>
 
-                                    <MainImage product={product} />
+                                    <MainImage product={productFound} />
                                 </div>
                             </div>
 
                             <div className="m-10 flex flex-col items-start justify-between pb-4">
                                 <div>
                                     <h1 className="mb-4 text-2xl font-bold">
-                                        {product.title}
+                                        {productFound.name}
                                     </h1>
                                     <div className="mb-4 flex items-center gap-2">
                                         <StarRating
-                                            rating={product.rating?.rate || 0}
+                                            rating={
+                                                fakeApiProductFound.rating
+                                                    ?.rate || 0
+                                            }
                                             size={14}
                                             className="mb-2"
                                         />
                                         <span className="text-sm text-gray-700">
                                             {' '}
-                                            {product.rating?.rate.toFixed(1) ||
-                                                '0.0'}{' '}
-                                            ({product.rating?.count || 0}{' '}
+                                            {productFound.rating?.rate.toFixed(
+                                                1,
+                                            ) || '0.0'}{' '}
+                                            ({productFound.rating?.count || 0}{' '}
                                             reviews)
                                         </span>
                                     </div>
                                     <p className="text-lg font-semibold">
-                                        ${product.price}
+                                        ${productFound.amount}
                                     </p>
                                     <p className="mb-2 text-gray-700">
-                                        {product.description}
+                                        {productFound.description}
                                     </p>
                                 </div>
                                 <div className="mt-4 flex w-full items-center">
@@ -148,7 +165,13 @@ export default function ProductDetails() {
                                     <Button
                                         variant="outline"
                                         className="bg-purple ml-4 w-full hover:bg-[#ae6ff7]"
-                                        onclick={() => {}}
+                                        onClick={() => {
+                                            console.log('hi');
+                                            handleAddToCart(
+                                                productFound.id,
+                                                counter,
+                                            );
+                                        }}
                                     >
                                         Add to Cart
                                     </Button>
@@ -176,7 +199,7 @@ export default function ProductDetails() {
                             <Skeleton className="m-20 h-98 w-90 rounded" />
                             <span className="relative left-28 flex before:absolute before:bottom-[0] before:h-[80px] before:w-[320px] before:scale-y-[0.4] before:rounded-[200px] before:bg-black/38 before:blur-md before:content-['']"></span>
                         </div>
-                        <div className="ml-18 mt-4 flex flex-col items-start justify-between pb-4">
+                        <div className="mt-4 ml-18 flex flex-col items-start justify-between pb-4">
                             <div>
                                 <Skeleton className="mb-1 h-6 w-80 rounded" />
                                 <Skeleton className="mb-4 h-6 w-20 rounded" />

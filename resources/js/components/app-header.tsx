@@ -54,7 +54,7 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
-    { title: 'Products', href: '#', icon: null },
+    { title: 'Products', href: '/products', icon: null },
     { title: 'Categories', href: '#', icon: null },
     { title: 'Orders', href: '#', icon: null },
     { title: 'Promotions', href: '#', icon: null },

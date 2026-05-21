@@ -1,16 +1,16 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import { Skeleton } from '@/components/ui/skeleton';
 import { dashboard } from '@/routes';
 import MainCarousel from '../components/custom/mainCarousel';
-import { fetchProducts } from '../services/api';
 
 export default function Dashboard() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [products, setProducts] = useState([]);
+    const [productsList, setProductsList] = useState([]);
     const [randomizedProducts, setRandomizedProducts] = useState([]);
+    const { products } = usePage().props;
 
     useEffect(() => {
         async function loadProducts(): Promise<void> {
@@ -18,8 +18,8 @@ export default function Dashboard() {
             setError(null);
 
             try {
-                const data = await fetchProducts('');
-                setProducts(data);
+                const data = products.slice();
+                setProductsList(data);
 
                 const shuffled = [...data];
 
@@ -69,7 +69,7 @@ export default function Dashboard() {
                     ) : error ? (
                         <p className="text-red-500">Error loading products.</p>
                     ) : (
-                        <MainCarousel array={products} />
+                        <MainCarousel array={productsList} />
                     )}
                 </div>
 

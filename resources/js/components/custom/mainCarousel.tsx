@@ -27,7 +27,7 @@ export default function MainCarousel({ array }: { array: any[] }) {
                                     <div className="mb-3 flex h-32 w-full items-center justify-center">
                                         <img
                                             src={product.image}
-                                            alt={product.title}
+                                            alt={product.name}
                                             className="max-h-14 max-w-14 object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.25)]"
                                             style={{
                                                 filter: 'drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2))',
@@ -37,13 +37,13 @@ export default function MainCarousel({ array }: { array: any[] }) {
 
                                     {/* Título alinhado à esquerda */}
                                     <h2 className="mb-2 line-clamp-2 text-left text-xs font-semibold">
-                                        {product.title?.slice(0, 20) + '...' ||
+                                        {product.name?.slice(0, 20) + '...' ||
                                             'Loading...'}
                                     </h2>
 
                                     {/* Preço alinhado à esquerda */}
                                     <p className="text-left text-sm font-bold text-[#ae6ff7]">
-                                        ${product.price}
+                                        ${product.amount}
                                     </p>
                                 </CardContent>
                             </Card>

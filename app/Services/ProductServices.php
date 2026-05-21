@@ -11,7 +11,12 @@ class ProductServices
 {
     public static function getProductsFromJetstockAPI()
     {
-        $response = Http::get(config('api.products_api_url') . '/products', 'page=1');
+        $counter = 1;
+        do {
+            $response = Http::get(config('api.products_api_url') . '/products', "page={$counter}");
+            $counter++;
+            echo ($response['meta']['last_page']);
+        } while ($response['meta']['last_page'] > $response['meta']['current_page']);
 
         return $response->json('data');
     }
