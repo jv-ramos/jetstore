@@ -1,52 +1,63 @@
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { usePage } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import CounterButton from '../components/custom/counterButton';
-import { fetchProducts } from '../services/api';
 
 export default function UserCart() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [counter, setCounter] = useState(1);
     const [products, setProducts] = useState([]);
-    const [randomizedProducts, setRandomizedProducts] = useState([]);
+    const { auth } = usePage().props;
+    const { cart } = auth;
+    const [quantities, setQuantities] = useState<Record<number, number>>({});
+    const [isCheckingOut, setIsCheckingOut] = useState(false);
 
     useEffect(() => {
-        async function loadProducts(): Promise<void> {
-            setLoading(true);
-            setError(null);
-
-            try {
-                const data = await fetchProducts('');
-                setProducts(data);
-
-                const shuffled = [...data];
-
-                for (let i = shuffled.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-                }
-
-                setRandomizedProducts(shuffled);
-            } catch (error) {
-                console.error('Error loading products:', error);
-            } finally {
-                setLoading(false);
-            }
+        if (cart?.items) {
+            const initial: Record<number, number> = {};
+            cart.items.forEach((item: any) => {
+                initial[item.id] = item.quantity;
+            });
+            setQuantities(initial);
+            setProducts(cart.items);
         }
-        loadProducts();
-    }, []);
-    console.log('Randomized Products:', randomizedProducts);
+    }, [cart]);
 
-    function handleCounter(operation: boolean) {
-        if (operation) {
-            setCounter((prev) => prev + 1);
-            console.log('Counter incremented:', counter + 1);
-        } else {
-            setCounter((prev) => (prev > 1 ? prev - 1 : 1));
+    function handleUpdateCart(products: any[]) {
+        if (isCheckingOut) {
+            return;
         }
+
+        setIsCheckingOut(true);
+
+        const items = products.map((product) => ({
+            product_id: product.product_id,
+            quantity: quantities[product.id] ?? product.quantity,
+        }));
+
+        router.patch(
+            '/cart/update-bulk',
+            { items },
+            {
+                onError: () => setIsCheckingOut(false),
+            },
+        );
+    }
+
+    function handleCheckout(products: any[]) {
+        handleUpdateCart(products);
+    }
+
+    function handleCounter(operation: boolean, buttonId: number) {
+        setQuantities((prev) => ({
+            ...prev,
+            [buttonId]: operation
+                ? (prev[buttonId] ?? 1) + 1
+                : Math.max(1, (prev[buttonId] ?? 1) - 1),
+        }));
     }
 
     return (
@@ -62,54 +73,63 @@ export default function UserCart() {
                     </div>
                     <div className="mb-4 flex max-h-[80vh]">
                         <div className="relative min-h-[60vh] min-w-5/8 rounded-xl border-1 bg-(--cards-color) p-4 shadow-[0_20px_20px_rgba(0,0,0,0.38)] dark:bg-(--dark-cards-color)">
-                            {randomizedProducts
-                                .slice(0, 3)
-                                .map((product: any) => (
-                                    <div
-                                        key={product.id}
-                                        className="mb-4 flex items-center justify-between"
-                                    >
-                                        <div className="flex w-1/6 items-center justify-center">
-                                            <img
-                                                src={product.image}
-                                                alt={product.title}
-                                                className="max-h-18 max-w-18 object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.25)]"
-                                            />
-                                        </div>
-                                        <div className="ml-4 w-3/6">
-                                            <p className="text-sm font-bold">
-                                                {product.title?.slice(0, 30) +
-                                                    '...'}{' '}
-                                            </p>
-                                        </div>
-                                        <div className="align-center m-2 ml-4 flex w-1/6 justify-center">
-                                            <p className="text-sm font-bold">
-                                                ${product.price}
-                                            </p>
-                                        </div>
-                                        <div
-                                            key={product}
-                                            className="flex w-1/6 items-center justify-between"
-                                        >
-                                            <CounterButton
-                                                counter={counter}
-                                                handleCounter={() => {}}
-                                            />
-                                        </div>
-                                        <div className="align-center m-2 ml-4 flex w-1/6 justify-center">
-                                            <p className="text-sm font-bold text-[#ae6ff7]">
-                                                ${product.price * counter}
-                                            </p>
-                                        </div>
-                                        <div className="m-6 text-sm text-gray-400">
-                                            X
-                                        </div>
+                            {products.map((product: any) => (
+                                <div
+                                    key={product.id}
+                                    className="mb-4 flex items-center justify-between"
+                                >
+                                    <div className="flex w-1/6 items-center justify-center">
+                                        <img
+                                            src={product.product.image}
+                                            alt={product.product.name}
+                                            className="max-h-18 max-w-18 object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.25)]"
+                                        />
                                     </div>
-                                ))}
+                                    <div className="ml-4 w-3/6">
+                                        <p className="text-sm font-bold">
+                                            {product.product.name?.slice(
+                                                0,
+                                                30,
+                                            ) + '...'}{' '}
+                                        </p>
+                                    </div>
+                                    <div className="align-center m-2 ml-4 flex w-1/6 justify-center">
+                                        <p className="text-sm font-bold">
+                                            ${product.product.amount}
+                                        </p>
+                                    </div>
+                                    <div
+                                        key={product}
+                                        className="flex w-1/6 items-center justify-between"
+                                    >
+                                        <CounterButton
+                                            buttonId={product.id}
+                                            counter={
+                                                quantities[product.id] ??
+                                                product.quantity
+                                            }
+                                            handleCounter={handleCounter}
+                                        />{' '}
+                                    </div>
+                                    <div className="align-center m-2 ml-4 flex w-1/6 justify-center">
+                                        <p className="text-sm font-bold text-[#ae6ff7]">
+                                            $
+                                            {(
+                                                product.product.amount *
+                                                (quantities[product.id] ??
+                                                    product.quantity)
+                                            ).toFixed(2)}
+                                        </p>
+                                    </div>
+                                    <div className="m-6 text-sm text-gray-400">
+                                        X
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                         <div className="mx-4 flex min-w-3/8 flex-col items-start">
                             <div className="relative flex min-h-[60vh] w-[stretch] max-w-110 flex-col justify-between rounded-xl border-1 bg-(--cards-color) p-4 p-10 shadow-[0_20px_20px_rgba(0,0,0,0.38)] dark:bg-(--dark-cards-color)">
-                                <div className="flex flex-col items-start h-[60%]">
+                                <div className="flex h-[60%] flex-col items-start">
                                     <h1 className="text-2xl font-bold">
                                         Order Summary
                                     </h1>
@@ -118,7 +138,19 @@ export default function UserCart() {
                                             Subtotal
                                         </p>
                                         <p className="text-sm font-bold">
-                                            $999.99
+                                            {products
+                                                .reduce(
+                                                    (total, product) =>
+                                                        total +
+                                                            product.product
+                                                                .amount *
+                                                                quantities[
+                                                                    product.id
+                                                                ] ??
+                                                        product.quantity,
+                                                    0,
+                                                )
+                                                .toFixed(2)}
                                         </p>
                                     </div>
                                     <div className="mt-4 flex w-full items-center justify-between">
@@ -138,26 +170,44 @@ export default function UserCart() {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="flex flex-col h-full items-center justify-between">
+                                <div className="flex h-full flex-col items-center justify-between">
                                     <div className="mt-4 flex w-full items-center justify-between border-t pt-4">
                                         <p className="text-xl font-bold">
                                             Total
                                         </p>
                                         <p className="text-xl font-bold text-[#ae6ff7]">
-                                            $999.99
+                                            {products
+                                                .reduce(
+                                                    (total, product) =>
+                                                        total +
+                                                            product.product
+                                                                .amount *
+                                                                quantities[
+                                                                    product.id
+                                                                ] ??
+                                                        product.quantity,
+                                                    0,
+                                                )
+                                                .toFixed(2)}
                                         </p>
                                     </div>
                                     <div className="mt-4 flex w-full items-center justify-between">
                                         <p className="text-sm text-green-600">
-                                            You save $100.00
+                                            You save $0
                                         </p>
                                     </div>
                                     <div className="mt-4 flex w-full items-center">
                                         <Button
                                             variant="outline"
                                             className="bg-purple h-12 w-full hover:bg-[#ae6ff7]"
+                                            onClick={() => {
+                                                handleCheckout(products);
+                                            }}
+                                            disabled={isCheckingOut}
                                         >
-                                            Proceed to Checkout
+                                            {isCheckingOut
+                                                ? 'Processing...'
+                                                : 'Proceed to Checkout'}
                                         </Button>
                                     </div>
                                 </div>
