@@ -61,7 +61,7 @@ function MainImage({ product }: { product: any }) {
 function handleAddToCart(productId: string, counter: number) {
     router.post('/cart/add', {
         product_id: productId,
-        quantity: counter,
+        cart_item_qt: counter,
     });
 }
 
@@ -166,7 +166,6 @@ export default function ProductDetails() {
                                         variant="outline"
                                         className="bg-purple ml-4 w-full hover:bg-[#ae6ff7]"
                                         onClick={() => {
-                                            console.log('hi');
                                             handleAddToCart(
                                                 productFound.id,
                                                 counter,
