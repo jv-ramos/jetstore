@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable('user_id', 'product_id', 'session_id', 'quantity', 'price_snapshot')]
+#[Fillable('user_id', 'product_id', 'session_id', 'cart_item_qt', 'price_snapshot')]
 class CartItem extends Model
 {
     /** @use HasFactory<\Database\Factories\CartItemFactory> */
@@ -21,6 +21,6 @@ class CartItem extends Model
     }
 
     public function getSubTotalAttribute() {
-        return $this->quantity * $this->price_snapeshot;
+        return $this->cart_item_qt * $this->price_snapeshot;
     }
 }

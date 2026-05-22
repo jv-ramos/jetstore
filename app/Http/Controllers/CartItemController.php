@@ -59,10 +59,10 @@ class CartItemController extends Controller
             $this->cartService->updateQuantity($request, $item['product_id'], $item['quantity']);
         }
 
-        return redirect()->route('checkout'); // deixa o Laravel/Inertia redirecionar
+        return redirect()->route('checkout');
     }
 
-    public function remove(Request $request, int $productId)
+    public function remove(Request $request, string $productId)
     {
         $this->cartService->removeItem($request, $productId);
 

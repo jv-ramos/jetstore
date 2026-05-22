@@ -19,7 +19,7 @@ export default function UserCart() {
         if (cart?.items) {
             const initial: Record<number, number> = {};
             cart.items.forEach((item: any) => {
-                initial[item.id] = item.quantity;
+                initial[item.id] = item.cart_item_qt;
             });
             setQuantities(initial);
             setProducts(cart.items);
@@ -35,7 +35,7 @@ export default function UserCart() {
 
         const items = products.map((product) => ({
             product_id: product.product_id,
-            quantity: quantities[product.id] ?? product.quantity,
+            quantity: quantities[product.id] ?? product.cart_item_qt,
         }));
 
         router.patch(
@@ -45,6 +45,10 @@ export default function UserCart() {
                 onError: () => setIsCheckingOut(false),
             },
         );
+    }
+
+    function handleRemoveItemFormCart(product: any): void {
+        router.delete(`/cart/remove/${product.product_id}`);
     }
 
     function handleCheckout(products: any[]) {
@@ -58,6 +62,29 @@ export default function UserCart() {
                 ? (prev[buttonId] ?? 1) + 1
                 : Math.max(1, (prev[buttonId] ?? 1) - 1),
         }));
+    }
+
+    function handleMultiply(
+        amount: any,
+        quantities: any,
+        productQuantity: any,
+    ): any {
+        return amount * (quantities ?? productQuantity);
+    }
+
+    function handleTotalAndFix(products: any, quantities: any): any {
+        return products
+            .reduce(
+                (total: any, product: any) =>
+                    total +
+                    handleMultiply(
+                        product.product.amount,
+                        quantities[product.id],
+                        product.cart_item_qt,
+                    ),
+                0,
+            )
+            .toFixed(2);
     }
 
     return (
@@ -106,7 +133,7 @@ export default function UserCart() {
                                             buttonId={product.id}
                                             counter={
                                                 quantities[product.id] ??
-                                                product.quantity
+                                                product.cart_item_qt
                                             }
                                             handleCounter={handleCounter}
                                         />{' '}
@@ -114,15 +141,24 @@ export default function UserCart() {
                                     <div className="align-center m-2 ml-4 flex w-1/6 justify-center">
                                         <p className="text-sm font-bold text-[#ae6ff7]">
                                             $
-                                            {(
-                                                product.product.amount *
-                                                (quantities[product.id] ??
-                                                    product.quantity)
+                                            {handleMultiply(
+                                                product.product.amount,
+                                                quantities[product.id],
+                                                product.cart_item_qt,
                                             ).toFixed(2)}
                                         </p>
                                     </div>
-                                    <div className="m-6 text-sm text-gray-400">
-                                        X
+                                    <div className="m-6 text-sm">
+                                        <Button
+                                            className="h-12 w-full bg-transparent  text-[#aa0a0a]"
+                                            onClick={() => {
+                                                handleRemoveItemFormCart(
+                                                    product,
+                                                );
+                                            }}
+                                        >
+                                            x
+                                        </Button>
                                     </div>
                                 </div>
                             ))}
@@ -138,19 +174,10 @@ export default function UserCart() {
                                             Subtotal
                                         </p>
                                         <p className="text-sm font-bold">
-                                            {products
-                                                .reduce(
-                                                    (total, product) =>
-                                                        total +
-                                                            product.product
-                                                                .amount *
-                                                                quantities[
-                                                                    product.id
-                                                                ] ??
-                                                        product.quantity,
-                                                    0,
-                                                )
-                                                .toFixed(2)}
+                                            {handleTotalAndFix(
+                                                products,
+                                                quantities,
+                                            )}
                                         </p>
                                     </div>
                                     <div className="mt-4 flex w-full items-center justify-between">
@@ -176,19 +203,10 @@ export default function UserCart() {
                                             Total
                                         </p>
                                         <p className="text-xl font-bold text-[#ae6ff7]">
-                                            {products
-                                                .reduce(
-                                                    (total, product) =>
-                                                        total +
-                                                            product.product
-                                                                .amount *
-                                                                quantities[
-                                                                    product.id
-                                                                ] ??
-                                                        product.quantity,
-                                                    0,
-                                                )
-                                                .toFixed(2)}
+                                            {handleTotalAndFix(
+                                                products,
+                                                quantities,
+                                            )}
                                         </p>
                                     </div>
                                     <div className="mt-4 flex w-full items-center justify-between">
