@@ -113,12 +113,16 @@ export default function UserCart() {
                                         />
                                     </div>
                                     <div className="ml-4 w-3/6">
-                                        <p className="text-sm font-bold">
-                                            {product.product.name?.slice(
-                                                0,
-                                                30,
-                                            ) + '...'}{' '}
-                                        </p>
+                                        <a
+                                            href={`/products/${product.product_id}`}
+                                        >
+                                            <p className="text-sm font-bold">
+                                                {product.product.name?.slice(
+                                                    0,
+                                                    30,
+                                                ) + '...'}{' '}
+                                            </p>
+                                        </a>
                                     </div>
                                     <div className="align-center m-2 ml-4 flex w-1/6 justify-center">
                                         <p className="text-sm font-bold">
@@ -150,7 +154,7 @@ export default function UserCart() {
                                     </div>
                                     <div className="m-6 text-sm">
                                         <Button
-                                            className="h-12 w-full bg-transparent  text-[#aa0a0a]"
+                                            className="h-12 w-full bg-transparent text-[#aa0a0a]"
                                             onClick={() => {
                                                 handleRemoveItemFormCart(
                                                     product,
@@ -248,3 +252,9 @@ export default function UserCart() {
         </div>
     );
 }
+UserCart.layout = {
+    breadcrumbs: [
+        { title: 'Dashboard', href: '/' },
+        { title: 'Cart', href: '/cart' },
+    ],
+};

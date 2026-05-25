@@ -266,6 +266,8 @@ export default function Address() {
 
 Address.layout = {
     breadcrumbs: [
+        { title: 'Dashboard', href: '/' },
+        { title: 'Settings', href: '/settings' },
         {
             title: 'Address settings',
             href: editAddress(),
