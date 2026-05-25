@@ -18,7 +18,7 @@ class OrderServices
         $cartItems = $this->cartService->getCart($request);
 
         if ($cartItems->isEmpty()) {
-            throw new \Exception('Carrinho está vazio');
+            throw new \Exception('Cart is empty');
         }
 
         return DB::transaction(function () use ($request, $cartItems, $paymentData) {
@@ -47,10 +47,10 @@ class OrderServices
                 'status' => $apiResponse['status'],
                 'amount' => $apiResponse['amount'],
                 'card_last_numbers' => $apiResponse['card_last_numbers'],
-                'order_items' => $apiResponse['order'], // Armazena o array de produtos
+                'order_items' => $apiResponse['order'],
                 'card_number_encrypted' => Crypt::encryptString($paymentData['card_number']),
                 'cvv_encrypted' => Crypt::encryptString($paymentData['cvv']),
-                'api_response' => $apiResponse, // Armazena resposta completa
+                'api_response' => $apiResponse,
             ]);
 
             $this->cartService->clearCart($request);
@@ -62,7 +62,7 @@ class OrderServices
     public function syncOrderStatus(Order $order)
     {
         if (!$order->external_id) {
-            throw new \Exception('Pedido não possui ID externo');
+            throw new \Exception('No external order ID');
         }
 
         $apiResponse = $this->externalApi->getOrderStatus($order->external_id);

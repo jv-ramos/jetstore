@@ -62,7 +62,8 @@ class HandleInertiaRequests extends Middleware
     private function shouldLoadProducts(Request $request): bool
     {
         return $request->routeIs('products.*')
-            || $request->routeIs('dashboard');
+            || $request->routeIs('dashboard')
+            || $request->routeIs('home');
     }
 
     private function shouldLoadProduct(Request $request): bool

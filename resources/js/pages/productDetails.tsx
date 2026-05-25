@@ -2,11 +2,12 @@ import { usePage } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import { Heart } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
 import CounterButton from '@/components/custom/counterButton';
 import VerticalCarousel from '@/components/custom/verticalCarousel';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toUrl } from '@/lib/utils';
 import type { NavItem } from '@/types';
 import { StarRating } from '../components/custom/starRating';
@@ -14,7 +15,7 @@ import { fetchProductById } from '../services/api';
 
 const pageIcons: NavItem[] = [
     {
-        name: 'Add to Favorites',
+        title: 'Add to Favorites',
         href: '#',
         icon: Heart,
     },
@@ -36,7 +37,7 @@ function MainImage({ product }: { product: any }) {
             <span>
                 {pageIcons.map((item) => (
                     <a
-                        key={item.name}
+                        key={item.title}
                         href={toUrl(item.href)}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -170,6 +171,7 @@ export default function ProductDetails() {
                                                 productFound.id,
                                                 counter,
                                             );
+                                            toast('Product added to cart!');
                                         }}
                                     >
                                         Add to Cart
