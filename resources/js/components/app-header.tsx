@@ -55,10 +55,10 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     { title: 'Products', href: '/products', icon: null },
-    { title: 'Categories', href: '#', icon: null },
-    { title: 'Orders', href: '#', icon: null },
-    { title: 'Promotions', href: '#', icon: null },
-    { title: 'Brands', href: '#', icon: null },
+    { title: 'Categories', href: '/categories', icon: null },
+    { title: 'Orders', href: '/orders', icon: null },
+    { title: 'Promotions', href: '/promotions', icon: null },
+    { title: 'Brands', href: '/brands', icon: null },
 ];
 
 // const rightTopNavItems: NavItem[] = [
