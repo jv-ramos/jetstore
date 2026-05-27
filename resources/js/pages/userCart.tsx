@@ -93,8 +93,8 @@ export default function UserCart() {
             <Card className="w-full border-0 bg-transparent">
                 <CardContent className="p-0">
                     <div className="flex flex-row items-start justify-start py-4 pl-8">
-                        <p className="mr-[18rem]">Product</p>
-                        <p className="mr-[2.4rem] ml-[1.6rem]">Price</p>
+                        <p className="mr-[17rem]">Product</p>
+                        <p className="mr-[2rem] ml-[1.6rem]">Price</p>
                         <p className="mr-[3.8rem] ml-[1.4rem]">Quantity</p>
                         <p className="ml-1">Total</p>
                     </div>
@@ -126,7 +126,7 @@ export default function UserCart() {
                                     </div>
                                     <div className="align-center m-2 ml-4 flex w-1/6 justify-center">
                                         <p className="text-sm font-bold">
-                                            ${product.product.amount}
+                                            ${product.product.amount.toFixed(2)}
                                         </p>
                                     </div>
                                     <div
@@ -154,7 +154,7 @@ export default function UserCart() {
                                     </div>
                                     <div className="m-6 text-sm">
                                         <Button
-                                            className="h-12 w-full bg-transparent text-[#aa0a0a]"
+                                            className="h-12 w-full bg-transparent text-[#aa0a0a] hover:bg-[#aa0a0a] hover:text-[#c1c1c1]"
                                             onClick={() => {
                                                 handleRemoveItemFormCart(
                                                     product,
