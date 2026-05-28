@@ -12,18 +12,11 @@ export default function CounterButton({
     handleCounter: (operation: boolean, buttonId: number) => void;
 }) {
     return (
-        <ButtonGroup orientation="horizontal" aria-label="Media controls" className="h-fit">
-            <Button
-                variant="outline"
-                size="icon"
-                className="cursor-pointer bg-(--cards-color) hover:text-[#33aa33] dark:bg-(--dark-cards-color) dark:hover:text-[#33aa33]"
-                onClick={() => handleCounter(true, buttonId)}
-            >
-                <PlusIcon />
-            </Button>
-            <span className="flex w-12 items-center justify-center border-1 text-lg font-semibold">
-                {counter}
-            </span>
+        <ButtonGroup
+            orientation="horizontal"
+            aria-label="Media controls"
+            className="h-fit"
+        >
             <Button
                 variant="outline"
                 size="icon"
@@ -31,6 +24,17 @@ export default function CounterButton({
                 onClick={() => handleCounter(false, buttonId)}
             >
                 <MinusIcon />
+            </Button>
+            <span className="flex w-12 items-center justify-center border-1 text-lg font-semibold">
+                {counter}
+            </span>
+            <Button
+                variant="outline"
+                size="icon"
+                className="cursor-pointer bg-(--cards-color) hover:text-[#33aa33] dark:bg-(--dark-cards-color) dark:hover:text-[#33aa33]"
+                onClick={() => handleCounter(true, buttonId)}
+            >
+                <PlusIcon />
             </Button>
         </ButtonGroup>
     );

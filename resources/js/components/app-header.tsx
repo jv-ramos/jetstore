@@ -55,10 +55,10 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     { title: 'Products', href: '/products', icon: null },
-    { title: 'Categories', href: '#', icon: null },
-    { title: 'Orders', href: '#', icon: null },
-    { title: 'Promotions', href: '#', icon: null },
-    { title: 'Brands', href: '#', icon: null },
+    { title: 'Categories', href: '/categories', icon: null },
+    { title: 'Orders', href: '/orders', icon: null },
+    { title: 'Promotions', href: '/promotions', icon: null },
+    { title: 'Brands', href: '/brands', icon: null },
 ];
 
 // const rightTopNavItems: NavItem[] = [
@@ -82,12 +82,12 @@ const mainNavItems: NavItem[] = [
 const rightBottomNavItems: NavItem[] = [
     {
         title: 'Support',
-        href: '#',
+        href: '/support',
         icon: Headset,
     },
     {
         title: 'Wishlist',
-        href: '#',
+        href: '/wishlist',
         icon: Heart,
     },
     {
@@ -237,7 +237,7 @@ export function AppHeader({ canRegister = true, breadcrumbs = [] }: Props) {
                             <div className="relative flex items-center space-x-1">
                                 <div className="ml-1 hidden gap-1 lg:flex">
                                     <div className="h-8 w-75 rounded-sm border-1 p-1 text-center">
-                                        PROMO 100% OFF
+                                        HIGHEST DISCOUNT
                                     </div>
                                 </div>
                             </div>

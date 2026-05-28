@@ -53,7 +53,7 @@ export default function Dashboard() {
                         <h1 className="text-2xl font-bold">
                             Featured Products
                         </h1>
-                        <a href="#" className="text-sm text-[#ae6ff7]">
+                        <a href="/products" className="text-sm text-[#ae6ff7]">
                             View all
                         </a>
                     </span>
@@ -77,7 +77,7 @@ export default function Dashboard() {
                 <div className="space-y-4">
                     <span className="flex items-center justify-between">
                         <h1 className="text-2xl font-bold">Best Selling</h1>
-                        <a href="#" className="text-sm text-[#ac6ff7]">
+                        <a href="/best-selling" className="text-sm text-[#ac6ff7]">
                             View all
                         </a>
                     </span>

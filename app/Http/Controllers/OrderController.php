@@ -21,9 +21,7 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return Inertia::render('Orders/Index', [
-            'orders' => $orders,
-        ]);
+        return Inertia::render('/dashboard');
     }
 
     public function show(Order $order)
