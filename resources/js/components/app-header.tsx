@@ -82,12 +82,12 @@ const mainNavItems: NavItem[] = [
 const rightBottomNavItems: NavItem[] = [
     {
         title: 'Support',
-        href: '#',
+        href: '/support',
         icon: Headset,
     },
     {
         title: 'Wishlist',
-        href: '#',
+        href: '/wishlist',
         icon: Heart,
     },
     {
@@ -237,7 +237,7 @@ export function AppHeader({ canRegister = true, breadcrumbs = [] }: Props) {
                             <div className="relative flex items-center space-x-1">
                                 <div className="ml-1 hidden gap-1 lg:flex">
                                     <div className="h-8 w-75 rounded-sm border-1 p-1 text-center">
-                                        PROMO 100% OFF
+                                        HIGHEST DISCOUNT
                                     </div>
                                 </div>
                             </div>
