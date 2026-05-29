@@ -16,6 +16,7 @@ export default function UserCart() {
     const [isCheckingOut, setIsCheckingOut] = useState(false);
 
     useEffect(() => {
+        console.log(cart);
         if (cart?.items) {
             const initial: Record<number, number> = {};
             cart.items.forEach((item: any) => {
@@ -62,6 +63,11 @@ export default function UserCart() {
                 ? (prev[buttonId] ?? 1) + 1
                 : Math.max(1, (prev[buttonId] ?? 1) - 1),
         }));
+        setTimeout(() => {
+            router.patch(`/cart/update/${buttonId}`, {
+                quantity: quantities,
+            });
+        }, 5000);
     }
 
     function handleMultiply(
@@ -171,7 +177,7 @@ export default function UserCart() {
                                     </div>
                                 ))}
                             </div>
-                            <div className="flex min-w-3/8 h-full flex-col items-start">
+                            <div className="flex h-full min-w-3/8 flex-col items-start">
                                 <div className="relative flex min-h-[60vh] w-[stretch] max-w-110 flex-col justify-between rounded-xl border-1 bg-(--cards-color) p-4 p-10 shadow-[0_20px_20px_rgba(0,0,0,0.38)] dark:bg-(--dark-cards-color)">
                                     <div className="flex h-[60%] flex-col items-start">
                                         <h1 className="mb-2 text-2xl font-bold">
