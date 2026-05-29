@@ -67,7 +67,7 @@ function handleAddToCart(productId: string, counter: number) {
 }
 
 export default function ProductDetails() {
-    // const { url } = usePage();
+    const { auth } = usePage().props;
     const { product } = usePage().props;
 
     // const productId = url.split('/').pop();
@@ -171,7 +171,10 @@ export default function ProductDetails() {
                                                 productFound.id,
                                                 counter,
                                             );
-                                            toast('Product added to cart!');
+
+                                            if (auth.user) {
+                                                toast('Product added to cart!');
+                                            }
                                         }}
                                     >
                                         Add to Cart
