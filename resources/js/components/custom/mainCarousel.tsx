@@ -43,7 +43,7 @@ export default function MainCarousel({ array }: { array: any[] }) {
 
                                     {/* Preço alinhado à esquerda */}
                                     <p className="text-left text-sm font-bold text-[#ae6ff7]">
-                                        ${product.amount}
+                                        ${product.amount.toFixed(2)}
                                     </p>
                                 </CardContent>
                             </Card>
