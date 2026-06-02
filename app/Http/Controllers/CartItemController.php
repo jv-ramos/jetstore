@@ -24,13 +24,14 @@ class CartItemController extends Controller
     {
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'integer|min:1',
+            'cart_item_qt' => 'integer|min:1',
         ]);
+        echo $validated['product_id'];
 
         $this->cartService->addItem(
             $request,
             $validated['product_id'],
-            $validated['quantity'] ?? 1
+            $validated['cart_item_qt'] ?? 1
         );
 
         return back()->with('success', 'Produto adicionado ao carrinho');
@@ -39,10 +40,10 @@ class CartItemController extends Controller
     public function update(Request $request, int $productId)
     {
         $validated = $request->validate([
-            'quantity' => 'required|integer|min:1',
+            'cart_item_qt' => 'required|integer|min:1',
         ]);
 
-        $this->cartService->updateQuantity($request, $productId, $validated['quantity']);
+        $this->cartService->updateQuantity($request, $productId, $validated['cart_item_qt']);
 
         return response()->noContent();
     }
@@ -52,11 +53,11 @@ class CartItemController extends Controller
         $validated = $request->validate([
             'items' => 'required|array',
             'items.*.product_id' => 'required|integer|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.cart_item_qt' => 'required|integer|min:1',
         ]);
 
         foreach ($validated['items'] as $item) {
-            $this->cartService->updateQuantity($request, $item['product_id'], $item['quantity']);
+            $this->cartService->updateQuantity($request, $item['product_id'], $item['cart_item_qt']);
         }
 
         return redirect()->route('checkout');
