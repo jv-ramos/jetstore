@@ -5,6 +5,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Checkout() {
     const { auth } = usePage().props;
@@ -98,10 +99,10 @@ export default function Checkout() {
                     }}
                     className="space-y-6"
                 >
-                    <div className="flex w-full gap-8">
-                        <div className="mb-4 flex max-h-[80vh]">
-                            <div className="relative min-h-[60vh] min-w-5/8 min-w-[70vh] rounded-xl border-1 bg-(--cards-color) p-4 shadow-[0_20px_20px_rgba(0,0,0,0.38)] dark:bg-(--dark-cards-color)">
-                                <div className="space-y-6">
+                    <div className="flex w-full gap-4">
+                        <div className="mb-4 flex max-h-[80vh] max-w-[57.8vw]">
+                            <div className="relative min-h-[60vh] min-w-5/8 rounded-xl border-1 bg-(--cards-color) p-4 shadow-[0_20px_20px_rgba(0,0,0,0.38)] dark:bg-(--dark-cards-color)">
+                                <div className="space-y-6 p-4">
                                     <Heading
                                         variant="small"
                                         title="Order info"
@@ -384,93 +385,104 @@ export default function Checkout() {
                             </div>
                         </div>
 
-                        <div className="mb-4 flex max-h-[80vh]">
-                            <div className="relative min-h-[60vh] min-w-[23vw] rounded-xl border-1 bg-(--cards-color) p-4 shadow-[0_20px_20px_rgba(0,0,0,0.38)] dark:bg-(--dark-cards-color)">
-                                <h1 className="mb-4 text-2xl font-bold">
-                                    Order Summary
-                                </h1>
-                                {cart.items.map((product: any) => (
-                                    <div
-                                        key={product.id}
-                                        className="mb-4 flex items-center justify-between"
-                                    >
-                                        <div className="flex w-1/6 items-center justify-center">
-                                            <img
-                                                src={product.product.image}
-                                                alt={product.product.name}
-                                                className="max-h-14 max-w-14 object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.25)]"
-                                            />
+                        <div className="flex min-w-3/8 flex-col items-start">
+                            <div className="relative flex min-h-[60vh] w-[stretch] max-w-110 flex-col justify-between rounded-xl border-1 bg-(--cards-color) p-4 p-10 shadow-[0_20px_20px_rgba(0,0,0,0.38)] dark:bg-(--dark-cards-color)">
+                                <div className="flex h-[60%] flex-col items-start">
+                                    <h1 className="mb-3 text-2xl font-bold">
+                                        Order Summary
+                                    </h1>
+                                    {cart.items.map((product: any) => (
+                                        <div
+                                            key={product.id}
+                                            className="flex items-center justify-between"
+                                        >
+                                            <div className="flex w-1/6 items-center justify-center">
+                                                <img
+                                                    src={product.product.image}
+                                                    alt={product.product.name}
+                                                    className="max-h-14 max-w-14 object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.25)]"
+                                                />
+                                            </div>
+                                            <div className="ml-4 w-5/6">
+                                                <p className="text-sm font-bold">
+                                                    {product.product.name?.slice(
+                                                        0,
+                                                        50,
+                                                    ) + '...'}{' '}
+                                                </p>
+                                            </div>
+                                            <div className="align-center ml-4 flex w-1/6 justify-end">
+                                                <p className="text-sm font-bold">
+                                                    $
+                                                    {(
+                                                        product.product.amount *
+                                                        product.cart_item_qt
+                                                    ).toFixed(2)}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className="ml-4 w-5/6">
-                                            <p className="text-sm font-bold">
-                                                {product.product.name?.slice(
-                                                    0,
-                                                    50,
-                                                ) + '...'}{' '}
-                                            </p>
-                                        </div>
-                                        <div className="align-center ml-4 flex w-1/6 justify-end">
-                                            <p className="text-sm font-bold">
-                                                $
-                                                {product.product.amount *
-                                                    product.cart_item_qt}
-                                            </p>
-                                        </div>
+                                    ))}
+                                    <div className="mt-4 flex w-full items-center justify-between">
+                                        <p className="text-sm text-gray-400">
+                                            Subtotal
+                                        </p>
+                                        <p className="text-sm font-bold">
+                                            ${cart.total.toFixed(2)}
+                                        </p>
                                     </div>
-                                ))}
-                                <div>
-                                    <div className="flex h-[60%] flex-col items-start border-t">
-                                        <div className="mt-4 flex w-full items-center justify-between">
-                                            <p className="text-sm text-gray-400">
-                                                Subtotal
-                                            </p>
-                                            <p className="text-sm font-bold">
-                                                ${cart.total}
-                                            </p>
-                                        </div>
-                                        <div className="mt-4 flex w-full items-center justify-between">
-                                            <p className="text-sm text-gray-400">
-                                                Shipping
-                                            </p>
-                                            <p className="text-sm font-bold">
-                                                Free
-                                            </p>
-                                        </div>
-                                        <div className="mt-4 flex w-full items-center justify-between">
-                                            <p className="text-sm text-gray-400">
-                                                Tax
-                                            </p>
-                                            <p className="text-sm font-bold">
-                                                $0.00
-                                            </p>
-                                        </div>
+                                    <div className="mt-4 flex w-full items-center justify-between">
+                                        <p className="text-sm text-gray-400">
+                                            Shipping
+                                        </p>
+                                        <p className="text-sm font-bold">
+                                            Free
+                                        </p>
                                     </div>
-                                    <div className="flex h-full flex-col items-center justify-between">
-                                        <div className="mt-4 flex w-full items-center justify-between border-t pt-4">
-                                            <p className="text-xl font-bold">
-                                                Total
-                                            </p>
-                                            <p className="text-xl font-bold text-[#ae6ff7]">
-                                                ${cart.total}
-                                            </p>
-                                        </div>
-                                        <div className="mt-4 flex w-full items-center justify-between">
-                                            <p className="text-sm text-green-600">
-                                                You save $0
-                                            </p>
-                                        </div>
-                                        <div className="mt-4 flex w-full items-center">
-                                            <Button
-                                                variant="outline"
-                                                type="submit"
-                                                disabled={processing}
-                                                className="bg-purple h-12 w-full hover:bg-[#ae6ff7]"
-                                            >
-                                                {processing
-                                                    ? 'Processing...'
-                                                    : 'Place Order'}
-                                            </Button>
-                                        </div>
+                                    <div className="mt-4 flex w-full items-center justify-between">
+                                        <p className="text-sm text-gray-400">
+                                            Tax
+                                        </p>
+                                        <p className="text-sm font-bold">
+                                            $0.00
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex h-full flex-col items-center justify-between">
+                                    <div className="mt-4 flex w-full items-center justify-between border-t pt-4">
+                                        <p className="text-xl font-bold">
+                                            Total
+                                        </p>
+                                        <p className="text-xl font-bold text-[#ae6ff7]">
+                                            ${cart.total.toFixed(2)}
+                                        </p>
+                                    </div>
+                                    <div className="mt-4 flex w-full items-center justify-between">
+                                        <p className="text-sm text-green-600">
+                                            You save $0
+                                        </p>
+                                    </div>
+                                    <div className="mt-4 flex w-full items-center">
+                                        <Button
+                                            variant="outline"
+                                            type="submit"
+                                            disabled={processing}
+                                            className="bg-purple h-12 w-full hover:bg-[#ae6ff7]"
+                                        >
+                                            {processing
+                                                ? 'Processing...'
+                                                : 'Place Order'}
+                                        </Button>
+                                    </div>
+                                </div>
+                                <div className="mt-4 flex h-40 w-full flex-col items-center justify-between border-t">
+                                    <p className="py-4 text-sm text-gray-400">
+                                        We accept
+                                    </p>
+                                    <div className="mb-16 flex flex-row justify-center gap-4">
+                                        <Skeleton className="h-8 w-16 rounded-lg" />
+                                        <Skeleton className="h-8 w-16 rounded-lg" />
+                                        <Skeleton className="h-8 w-16 rounded-lg" />
+                                        <Skeleton className="h-8 w-16 rounded-lg" />
                                     </div>
                                 </div>
                             </div>
