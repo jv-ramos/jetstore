@@ -38,6 +38,8 @@ export default function ProductDetailsContainer({
     error: any;
     loading: boolean;
 }) {
+    console.log('Product found:', productFound);
+
     return (
         <Card className="w-full border-0 bg-transparent">
             <CardContent className="p-0">
@@ -107,6 +109,22 @@ export default function ProductDetailsContainer({
                                     </div>
                                     <p className="text-lg font-semibold">
                                         ${productFound.amount}
+                                        {productFound.promotions &&
+                                            productFound.promotions.length >
+                                                0 && (
+                                                <span className="pl-1 text-left text-xs text-gray-500 line-through">
+                                                    {(
+                                                        productFound.amount /
+                                                        ((100 -
+                                                            Number(
+                                                                productFound
+                                                                    .promotions[0]
+                                                                    .discount_percentage,
+                                                            )) /
+                                                            100)
+                                                    ).toFixed(2)}
+                                                </span>
+                                            )}
                                     </p>
                                     <p className="mb-2 text-gray-700">
                                         {productFound.description}

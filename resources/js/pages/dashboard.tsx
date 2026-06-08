@@ -7,8 +7,10 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [productsList, setProductsList] = useState([]);
+    const [promotionsList, setPromotionsList] = useState([]);
     const [randomizedProducts, setRandomizedProducts] = useState([]);
     const { products } = usePage().props;
+    const { promotions } = usePage().props;
 
     useEffect(() => {
         async function loadProducts(): Promise<void> {
@@ -16,8 +18,11 @@ export default function Dashboard() {
             setError(null);
 
             try {
-                const data = products.slice();
+                const data = products.data.slice();
                 setProductsList(data);
+
+                const promoData = promotions.data.slice();
+                setPromotionsList(promoData);
 
                 const shuffled = [...data];
 
@@ -37,7 +42,7 @@ export default function Dashboard() {
     }, []);
 
     return (
-        <DashboardContainer loading={loading} error={error} productsList={productsList} randomizedProducts={randomizedProducts} />
+        <DashboardContainer loading={loading} error={error} productsList={productsList} promotionsList={promotionsList} randomizedProducts={randomizedProducts} />
     );
 }
 

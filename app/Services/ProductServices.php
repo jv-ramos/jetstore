@@ -9,6 +9,37 @@ use Throwable;
 
 class ProductServices
 {
+    public static function listProductsAndApplyPromotions()
+    {
+        $products = Product::with('promotions')->paginate(20);
+        foreach ($products as $product) {
+            $activePromotion = $product->promotions()
+                ->where('start_date', '<=', now())
+                ->where('end_date', '>=', now())
+                ->first();
+
+            if ($activePromotion) {
+                $discount = $activePromotion->discount_percentage;
+                $product->amount = round($product->amount * (1 - $discount / 100), 2);
+            }
+        }
+        return $products;
+    }
+
+    public static function showProductDetailsAndApplyPromotion(Product $product)
+    {
+        $activePromotion = $product->promotions()
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
+
+        if ($activePromotion) {
+            $discount = $activePromotion->discount_percentage;
+            $product->amount = round($product->amount * (1 - $discount / 100), 2);
+        }
+        return $product;
+    }
+
     public static function getProductsFromJetstockAPI()
     {
         $counter = 1;

@@ -7,11 +7,13 @@ export default function DashboardContainer({
     loading,
     error,
     productsList,
+    promotionsList,
     randomizedProducts,
 }: {
     loading: boolean;
     error: string | null;
     productsList: any[];
+    promotionsList: any[];
     randomizedProducts: any[];
 }) {
     return (
@@ -73,6 +75,33 @@ export default function DashboardContainer({
                         <p className="text-red-500">Error loading products.</p>
                     ) : (
                         <MainCarousel array={randomizedProducts} />
+                    )}
+                </div>
+
+                {/* Promotions */}
+                <div className="space-y-4">
+                    <span className="flex items-center justify-between">
+                        <h1 className="text-2xl font-bold">Promotions</h1>
+                        <a
+                            href="/promotions"
+                            className="text-sm text-[#ac6ff7]"
+                        >
+                            View all
+                        </a>
+                    </span>
+                    {loading ? (
+                        <div className="flex gap-4">
+                            {[...Array(6)].map((_, index) => (
+                                <Skeleton
+                                    key={index}
+                                    className="h-48 w-full rounded-lg"
+                                />
+                            ))}
+                        </div>
+                    ) : error ? (
+                        <p className="text-red-500">Error loading products.</p>
+                    ) : (
+                        <MainCarousel array={promotionsList} />
                     )}
                 </div>
             </div>
