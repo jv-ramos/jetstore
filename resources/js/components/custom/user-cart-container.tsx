@@ -1,0 +1,191 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import CounterButton from './counterButton';
+
+export default function UserCartContainer({
+    loading,
+    error,
+    quantities,
+    isCheckingOut,
+    products,
+    handleCounter,
+    handleRemoveItemFormCart,
+    handleCheckout,
+    handleTotalAndFix,
+    handleMultiply,
+}: any) {
+    console.log(products);
+
+    return (
+        <div className="flex h-full w-full flex-1 flex-col rounded-xl p-4">
+            <h1 className="text-2xl font-bold">My Cart</h1>
+            <Card className="w-full border-0 bg-transparent">
+                <CardContent className="p-0">
+                    <div className="flex flex-row items-start justify-start py-4 pl-8">
+                        <p className="mr-[17rem]">Product</p>
+                        <p className="mr-[2rem] ml-[1.6rem]">Price</p>
+                        <p className="mr-[3.8rem] ml-[1.4rem]">Quantity</p>
+                        <p className="ml-1">Total</p>
+                    </div>
+                    <div className="mb-4 flex max-h-[80vh] max-w-[1218px]">
+                        <div className="flex w-full gap-4">
+                            <div className="relative min-h-[60vh] min-w-5/8 rounded-xl border-1 bg-(--cards-color) p-4 shadow-[0_20px_20px_rgba(0,0,0,0.38)] dark:bg-(--dark-cards-color)">
+                                {products.map((product: any) => (
+                                    <div
+                                        key={product.id}
+                                        className="mb-4 flex max-w-[inherit] items-center justify-between"
+                                    >
+                                        <div className="flex w-1/6 items-center justify-center">
+                                            <img
+                                                src={product.product.image}
+                                                alt={product.product.name}
+                                                className="max-h-16 max-w-16 object-contain drop-shadow-[0_8px_12px_rgba(0,0,0,0.25)]"
+                                            />
+                                        </div>
+                                        <div className="ml-4 w-3/6">
+                                            <a
+                                                href={`/products/${product.product_id}`}
+                                            >
+                                                <p className="text-sm font-bold">
+                                                    {product.product.name?.slice(
+                                                        0,
+                                                        30,
+                                                    ) + '...'}{' '}
+                                                </p>
+                                            </a>
+                                        </div>
+                                        <div className="align-center m-2 ml-4 flex w-1/6 justify-center">
+                                            <p className="text-sm font-bold">
+                                                $
+                                                {product.product.amount.toFixed(
+                                                    2,
+                                                )}
+                                            </p>
+                                        </div>
+                                        <div
+                                            key={product}
+                                            className="flex w-1/6 items-center justify-between"
+                                        >
+                                            <CounterButton
+                                                buttonId={product.id}
+                                                counter={
+                                                    quantities[product.id] ??
+                                                    product.cart_item_qt
+                                                }
+                                                handleCounter={handleCounter}
+                                            />{' '}
+                                        </div>
+                                        <div className="align-center m-2 ml-4 flex w-1/6 justify-center">
+                                            <p className="text-sm font-bold text-[#ae6ff7]">
+                                                $
+                                                {handleMultiply(
+                                                    product.product.amount,
+                                                    quantities[product.id],
+                                                    product.cart_item_qt,
+                                                ).toFixed(2)}
+                                            </p>
+                                        </div>
+                                        <div className="m-4 text-sm">
+                                            <Button
+                                                className="h-12 w-full bg-transparent text-[#aa0a0a] hover:bg-[#aa0a0a] hover:text-[#c1c1c1]"
+                                                onClick={() => {
+                                                    handleRemoveItemFormCart(
+                                                        product,
+                                                    );
+                                                }}
+                                            >
+                                                x
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="flex h-full min-w-3/8 flex-col items-start">
+                                <div className="relative flex min-h-[60vh] w-[stretch] max-w-110 flex-col justify-between rounded-xl border-1 bg-(--cards-color) p-4 p-10 shadow-[0_20px_20px_rgba(0,0,0,0.38)] dark:bg-(--dark-cards-color)">
+                                    <div className="flex h-[60%] flex-col items-start">
+                                        <h1 className="mb-2 text-2xl font-bold">
+                                            Order Summary
+                                        </h1>
+                                        <div className="mt-4 flex w-full items-center justify-between">
+                                            <p className="text-sm text-gray-400">
+                                                Subtotal
+                                            </p>
+                                            <p className="text-sm font-bold">
+                                                $
+                                                {handleTotalAndFix(
+                                                    products,
+                                                    quantities,
+                                                )}
+                                            </p>
+                                        </div>
+                                        <div className="mt-4 flex w-full items-center justify-between">
+                                            <p className="text-sm text-gray-400">
+                                                Shipping
+                                            </p>
+                                            <p className="text-sm font-bold">
+                                                Free
+                                            </p>
+                                        </div>
+                                        <div className="mt-4 flex w-full items-center justify-between">
+                                            <p className="text-sm text-gray-400">
+                                                Tax
+                                            </p>
+                                            <p className="text-sm font-bold">
+                                                $0.00
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex h-full flex-col items-center justify-between">
+                                        <div className="mt-4 flex w-full items-center justify-between border-t pt-4">
+                                            <p className="text-xl font-bold">
+                                                Total
+                                            </p>
+                                            <p className="text-xl font-bold text-[#ae6ff7]">
+                                                $
+                                                {handleTotalAndFix(
+                                                    products,
+                                                    quantities,
+                                                )}
+                                            </p>
+                                        </div>
+                                        <div className="mt-4 flex w-full items-center justify-between">
+                                            <p className="text-sm text-green-600">
+                                                You save $0
+                                            </p>
+                                        </div>
+                                        <div className="mt-4 flex w-full items-center">
+                                            <Button
+                                                variant="outline"
+                                                className="bg-purple h-12 w-full hover:bg-[#ae6ff7]"
+                                                onClick={() => {
+                                                    handleCheckout(products);
+                                                }}
+                                                disabled={isCheckingOut}
+                                            >
+                                                {isCheckingOut
+                                                    ? 'Processing...'
+                                                    : 'Proceed to Checkout'}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 flex h-40 w-full flex-col items-center justify-between border-t">
+                                        <p className="py-4 text-sm text-gray-400">
+                                            We accept
+                                        </p>
+                                        <div className="mb-16 flex flex-row justify-center gap-4">
+                                            <Skeleton className="h-8 w-16 rounded-lg" />
+                                            <Skeleton className="h-8 w-16 rounded-lg" />
+                                            <Skeleton className="h-8 w-16 rounded-lg" />
+                                            <Skeleton className="h-8 w-16 rounded-lg" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    );
+}

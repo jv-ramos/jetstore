@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\Address;
 use App\Services\CartServices;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PromotionController;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -51,10 +53,13 @@ class HandleInertiaRequests extends Middleware
                 ],
             ],
             'products' => fn() => $this->shouldLoadProducts($request)
-                ? Product::all()
+                ? app(ProductController::class)->index()
+                : null,
+            'promotions' => fn() => $this->shouldLoadProducts($request)
+                ? app(PromotionController::class)->index()
                 : null,
             'product' => fn() => $this->shouldLoadProduct($request)
-                ? Product::find($request->route('product')) : null,
+                ? app(ProductController::class)->show(Product::with('promotions')->find($request->route('product'))) : null,
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }
@@ -69,5 +74,21 @@ class HandleInertiaRequests extends Middleware
     private function shouldLoadProduct(Request $request): bool
     {
         return $request->routeIs('product-details');
+    }
+
+    private function loadPromotions(Request $request)
+    {
+        if ($this->shouldLoadProducts($request)) {
+            $products = [];
+            $promo = Product::with('promotions')->get()->pluck('promotions')->flatten();
+            foreach ($promo as $p) {
+                $product = Product::find($p->product_id);
+                if ($product) {
+                    $products[] = $product;
+                }
+            }
+            return $products;
+        }
+        return null;
     }
 }

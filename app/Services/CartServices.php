@@ -17,7 +17,7 @@ class CartServices
 
     public function addItem(Request $request, int $productId, int $cart_item_qt = 1)
     {
-        $product = Product::findOrFail($productId);
+        $product = Product::findOrFail($productId)->with('promotions')->first();
         $identifier = $this->getCartIdentifier($request);
 
         $cartItem = CartItem::firstOrNew(
