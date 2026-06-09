@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\Promotion;
 
 class PromotionServices
 {
@@ -21,5 +22,26 @@ class PromotionServices
             }
         }
         return $products;
+    }
+
+    public static function makeDailyPromotion()
+    {
+        $products = Product::inRandomOrder()->take(5)->get();
+        foreach ($products as $product) {
+            Promotion::create([
+                'product_id' => $product->id,
+                'discount_percentage' => rand(10, 50),
+                'start_date' => now(),
+                'end_date' => now()->addDay(),
+            ]);
+        }
+    }
+
+    public static function endExpiredPromotions()
+    {
+        $expiredPromotions = Promotion::where('end_date', '<', now())->get();
+        foreach ($expiredPromotions as $promotion) {
+            $promotion->delete();
+        }
     }
 }
