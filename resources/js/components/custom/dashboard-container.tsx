@@ -1,7 +1,9 @@
 import { Head } from '@inertiajs/react';
+import { useState } from 'react';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import { Skeleton } from '@/components/ui/skeleton';
 import MainCarousel from './mainCarousel';
+import Modal from './modal';
 
 export default function DashboardContainer({
     loading,
@@ -16,9 +18,22 @@ export default function DashboardContainer({
     promotionsList: any[];
     randomizedProducts: any[];
 }) {
+    const [isModalOpen, setIsModalOpen] = useState(true);
+    const modalData = {
+        title: 'Welcome to the Dashboard',
+        note: 'This is a work in progress',
+        body: 'This application is an academic prototype, not a commercial product, and is intended solely for demonstration and learning purposes.',
+        comment: 'This project was developed as a hands-on study encompassing multiple domains of modern software engineering. It explores full-stack development with PHP and the Laravel framework, RESTful API design, and microservices architecture with independent, loosely coupled services communicating via well-defined interfaces. The project also covers cloud deployment strategies, API Gateway configuration for routing, authentication, and rate limiting, as well as integration with third-party payment systems and financial APIs. Additional topics include containerization, CI/CD pipelines, and scalable infrastructure provisioning — reflecting real-world practices adopted across the industry.',
+    };
+
     return (
         <>
             <Head title="Dashboard" />
+            <Modal
+                children={modalData}
+                open={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
             <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
                 {/* Hero/Placeholder Section */}
                 <div className="relative mb-4 min-h-[40vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
