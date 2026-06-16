@@ -17,11 +17,18 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
+        if (! request()->user() && ! request()->session()->has('cart_session')) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Seu carrinho está vazio');
+        }
+
         $orders = Order::where('user_id', $request->user()->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return Inertia::render('/dashboard');
+        return Inertia::render('/Orders/Index', [
+            'orders' => $orders,
+        ]);
     }
 
     public function show(Order $order)

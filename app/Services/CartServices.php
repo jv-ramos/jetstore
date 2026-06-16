@@ -17,7 +17,7 @@ class CartServices
 
     public function addItem(Request $request, int $productId, int $cart_item_qt = 1)
     {
-        $product = Product::findOrFail($productId)->with('promotions')->first();
+        $product = Product::findOrFail($productId);
         $identifier = $this->getCartIdentifier($request);
 
         $cartItem = CartItem::firstOrNew(
@@ -53,9 +53,23 @@ class CartServices
     {
         $identifier = $this->getCartIdentifier($request);
 
-        return CartItem::where($identifier)
+        $query = CartItem::where($identifier)
             ->with('product')
             ->get();
+
+        $cart = collect();
+
+        foreach ($query as $item) {
+            $cart->push([
+                'id' => $item->id,
+                'product_id' => $item->product_id,
+                'cart_item_qt' => $item->cart_item_qt,
+                'price_snapshot' => $item->price_snapshot,
+                'product' => collect($item->product)->only(['id', 'name', 'amount', 'image']),
+            ]);
+        }
+
+        return $cart;
     }
 
     public function getTotal(Request $request)
@@ -63,9 +77,30 @@ class CartServices
         $cart = $this->getCart($request);
         $total = 0;
         foreach ($cart as $item) {
-            $total += $item->price_snapshot * $item->cart_item_qt;
+            $total += $item['cart_item_qt'] * $item['price_snapshot'];
         }
         return $total;
+    }
+
+    public function getCount(Request $request)
+    {
+        $identifier = $this->getCartIdentifier($request);
+
+        return CartItem::where($identifier)->sum('cart_item_qt');
+    }
+
+    public function getPromotion(Request $request)
+    {
+        $cart = $this->getCart($request);
+        $promotions = collect();
+
+        foreach ($cart as $item) {
+            $promotions = $promotions->merge(Product::with('promotions')
+                ->find($item['product_id'])
+                ->promotions);
+        }
+
+        return $promotions->unique('id')->values();
     }
 
     public function clearCart(Request $request)

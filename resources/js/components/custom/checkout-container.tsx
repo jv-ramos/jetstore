@@ -16,6 +16,17 @@ export default function CheckoutContainer({
     loadingCep,
     handleCepBlur,
     formatCep,
+}: {
+    cart: any;
+    data: any;
+    setData: any;
+    post: any;
+    processing: boolean;
+    errors: any;
+    cepError: string | null;
+    loadingCep: boolean;
+    handleCepBlur: () => void;
+    formatCep: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
     return (
         <>

@@ -13,15 +13,13 @@ export default function UserCart() {
     const { cart } = auth;
 
     useEffect(() => {
-        console.log(cart);
-
         if (cart?.items) {
             const initial: Record<number, number> = {};
             cart.items.forEach((item: any) => {
                 initial[item.id] = item.cart_item_qt;
             });
             setQuantities(initial);
-            setProducts(cart.items);
+            setProducts(cart);
         }
     }, [cart]);
 
@@ -76,20 +74,24 @@ export default function UserCart() {
         return amount * (quantities ?? productQuantity);
     }
 
-    function handleTotalAndFix(products: any, quantities: any): any {
-        return products
-            .reduce(
-                (total: any, product: any) =>
-                    total +
-                    handleMultiply(
-                        product.product.amount,
-                        quantities[product.id],
-                        product.cart_item_qt,
-                    ),
-                0,
-            )
-            .toFixed(2);
-    }
+    // function handleTotalAndFix(products: any, quantities: any): any {
+    //     if (!products || products.length === 0) {
+    //         return '0.00';
+    //     }
+    //
+    //     return products
+    //         .reduce(
+    //             (total: any, product: any) =>
+    //                 total +
+    //                 handleMultiply(
+    //                     product.items.amount,
+    //                     quantities[product.id],
+    //                     product.cart_item_qt,
+    //                 ),
+    //             0,
+    //         )
+    //         .toFixed(2);
+    // }
 
     return (
         <UserCartContainer
@@ -101,7 +103,7 @@ export default function UserCart() {
             handleRemoveItemFormCart={handleRemoveItemFormCart}
             handleCheckout={handleCheckout}
             handleCounter={handleCounter}
-            handleTotalAndFix={handleTotalAndFix}
+            // handleTotalAndFix={handleTotalAndFix}
             handleMultiply={handleMultiply}
         />
     );

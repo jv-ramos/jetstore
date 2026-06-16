@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\ProductController;
+// use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Inertia\Inertia;
@@ -37,12 +37,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::inertia('checkout', 'checkout')->name('checkout');
 
-    // Route::inertia('orders', 'notFound')->name('not-found');
     // Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     // Route::get('/orders/checkout', [OrderController::class, 'checkout'])->name('orders.checkout');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::post('/orders/{order}/sync', [OrderController::class, 'sync'])->name('orders.sync');
+    Route::inertia('/orders', 'orders/index')->name('orders-history');
 });
 
 require __DIR__ . '/settings.php';

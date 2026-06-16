@@ -2,11 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Controllers\CartItemController;
+use App\Http\Controllers\OrderController;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\Address;
-use App\Services\CartServices;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PromotionController;
 
@@ -46,11 +47,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
                 'address' => $request->user() ? Address::where('user_id', $request->user()->id)->first() : null,
-                'cart' => fn() => [
-                    'items' => app(CartServices::class)->getCart($request),
-                    'total' => app(CartServices::class)->getTotal($request),
-                    'count' => app(CartServices::class)->getCart($request)->sum('quantity'),
-                ],
+                'cart' => app(CartItemController::class)->getCart($request),
+                'orders' => app(OrderController::class)->index($request),
             ],
             'products' => fn() => $this->shouldLoadProducts($request)
                 ? app(ProductController::class)->index()
@@ -74,21 +72,5 @@ class HandleInertiaRequests extends Middleware
     private function shouldLoadProduct(Request $request): bool
     {
         return $request->routeIs('product-details');
-    }
-
-    private function loadPromotions(Request $request)
-    {
-        if ($this->shouldLoadProducts($request)) {
-            $products = [];
-            $promo = Product::with('promotions')->get()->pluck('promotions')->flatten();
-            foreach ($promo as $p) {
-                $product = Product::find($p->product_id);
-                if ($product) {
-                    $products[] = $product;
-                }
-            }
-            return $products;
-        }
-        return null;
     }
 }
