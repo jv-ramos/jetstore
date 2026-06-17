@@ -3,7 +3,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import CounterButton from './counterButton';
 import ItemPrice from './ui/item-price';
-import Subtotal from './ui/subtotal';
 
 export default function UserCartContainer({
     loading,
@@ -17,7 +16,67 @@ export default function UserCartContainer({
     handleTotalAndFix,
     handleMultiply,
 }: any) {
-    const items = products?.items ?? []
+    const items = products?.items ?? [];
+
+    function itemPriceWithDiscount(
+        product: any,
+        quantity: any,
+        promotion = null,
+    ) {
+        let result = 0;
+        result = product.amount * quantity;
+
+        if (promotion) {
+            result = (
+                result * ((100 - promotion.discount_percentage) /
+                100)
+            ).toFixed(2);
+        }
+
+        return result;
+    }
+
+    function rawSubtotal(products, quantities) {
+        if (!products.items) {
+            return 0.0;
+        }
+
+        let quantity = 0;
+        let result = 0;
+
+        products.items.map((item: any) => {
+            quantity = quantities[item.id] ?? item.cart_item_qt;
+            result += quantity * item.product.amount;
+        });
+
+        return result.toFixed(2);
+    }
+
+    function subtotal(products, quantities) {
+        if (!products.items) {
+            return 0.0;
+        }
+
+        let quantity = 0;
+        let subtotal = 0;
+        products.items.map((item: any, index: any) => {
+            quantity = quantities[item.id] ?? item.cart_item_qt;
+            subtotal += quantity * item.product.amount;
+
+            if (products.promotion) {
+                if (!products['promotion'][index]) {
+                    return;
+                }
+
+                subtotal =
+                    subtotal *
+                    ((100 - products['promotion'][index].discount_percentage) /
+                        100);
+            }
+        });
+
+        return subtotal.toFixed(2);
+    }
 
     return (
         <div className="flex h-full w-full flex-1 flex-col rounded-xl p-4">
@@ -33,7 +92,7 @@ export default function UserCartContainer({
                     <div className="mb-4 flex max-h-[80vh] max-w-[1218px]">
                         <div className="flex w-full gap-4">
                             <div className="relative min-h-[60vh] min-w-5/8 rounded-xl border-1 bg-(--cards-color) p-4 shadow-[0_20px_20px_rgba(0,0,0,0.38)] dark:bg-(--dark-cards-color)">
-                                {items.map((cart: any) => (
+                                {items.map((cart: any, index: any) => (
                                     <div
                                         key={cart.id}
                                         className="mb-4 flex max-w-[inherit] items-center justify-between"
@@ -58,9 +117,7 @@ export default function UserCartContainer({
                                             </a>
                                         </div>
                                         <div className="align-center m-2 ml-4 flex w-1/6 justify-center">
-                                            <ItemPrice
-                                                product={cart.product}
-                                            />
+                                            <ItemPrice product={cart.product} />
                                         </div>
                                         <div
                                             key={cart}
@@ -77,12 +134,12 @@ export default function UserCartContainer({
                                         </div>
                                         <div className="align-center m-2 ml-4 flex w-1/6 justify-center">
                                             <p className="text-sl font-bold text-[#ae6ff7]">
-                                                $<ItemPrice
-                                                    product={cart.product}
-                                                    quantity={
-                                                        quantities[cart.id]
-                                                    }
-                                                />
+                                                $
+                                                {itemPriceWithDiscount(
+                                                    cart.product,
+                                                    quantities[cart.id],
+                                                    products.promotion[index],
+                                                )}
                                             </p>
                                         </div>
                                         <div className="m-4 text-sm">
@@ -112,7 +169,7 @@ export default function UserCartContainer({
                                             </p>
                                             <p className="text-sm font-bold">
                                                 $
-                                                <Subtotal products={products} quantities={quantities} />
+                                                {subtotal(products, quantities)}
                                             </p>
                                         </div>
                                         <div className="mt-4 flex w-full items-center justify-between">
@@ -139,12 +196,22 @@ export default function UserCartContainer({
                                             </p>
                                             <p className="text-xl font-bold text-[#ae6ff7]">
                                                 $
-                                                <Subtotal products={products} quantities={quantities} />
+                                                {subtotal(products, quantities)}
                                             </p>
                                         </div>
                                         <div className="mt-4 flex w-full items-center justify-between">
                                             <p className="text-sm text-green-600">
-                                                You save $0
+                                                You save $
+                                                {(
+                                                    rawSubtotal(
+                                                        products,
+                                                        quantities,
+                                                    ) -
+                                                    subtotal(
+                                                        products,
+                                                        quantities,
+                                                    )
+                                                ).toFixed(2)}
                                             </p>
                                         </div>
                                         <div className="mt-4 flex w-full items-center">

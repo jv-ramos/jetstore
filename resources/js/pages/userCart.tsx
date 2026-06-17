@@ -30,7 +30,8 @@ export default function UserCart() {
 
         setIsCheckingOut(true);
 
-        const items = products.map((product) => ({
+        console.log(products);
+        const items = products.items.map((product) => ({
             product_id: product.product_id,
             cart_item_qt: quantities[product.id] ?? product.cart_item_qt,
         }));
