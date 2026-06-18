@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { itemPriceWithDiscount, rawSubtotal, subtotal } from '@/services/helpers';
 import CounterButton from './counterButton';
 import ItemPrice from './ui/item-price';
 
@@ -17,66 +18,6 @@ export default function UserCartContainer({
     handleMultiply,
 }: any) {
     const items = products?.items ?? [];
-
-    function itemPriceWithDiscount(
-        product: any,
-        quantity: any,
-        promotion = null,
-    ) {
-        let result = 0;
-        result = product.amount * quantity;
-
-        if (promotion) {
-            result = (
-                result * ((100 - promotion.discount_percentage) /
-                100)
-            ).toFixed(2);
-        }
-
-        return result;
-    }
-
-    function rawSubtotal(products, quantities) {
-        if (!products.items) {
-            return 0.0;
-        }
-
-        let quantity = 0;
-        let result = 0;
-
-        products.items.map((item: any) => {
-            quantity = quantities[item.id] ?? item.cart_item_qt;
-            result += quantity * item.product.amount;
-        });
-
-        return result.toFixed(2);
-    }
-
-    function subtotal(products, quantities) {
-        if (!products.items) {
-            return 0.0;
-        }
-
-        let quantity = 0;
-        let subtotal = 0;
-        products.items.map((item: any, index: any) => {
-            quantity = quantities[item.id] ?? item.cart_item_qt;
-            subtotal += quantity * item.product.amount;
-
-            if (products.promotion) {
-                if (!products['promotion'][index]) {
-                    return;
-                }
-
-                subtotal =
-                    subtotal *
-                    ((100 - products['promotion'][index].discount_percentage) /
-                        100);
-            }
-        });
-
-        return subtotal.toFixed(2);
-    }
 
     return (
         <div className="flex h-full w-full flex-1 flex-col rounded-xl p-4">
