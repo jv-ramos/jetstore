@@ -26,7 +26,7 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return Inertia::render('/Orders/Index', [
+        return Inertia::render('orders/index', [
             'orders' => $orders,
         ]);
     }
@@ -75,8 +75,8 @@ class OrderController extends Controller
                 $order->update(['notes' => $validated['notes']]);
             }
 
-            // return redirect()->route('orders.show', $order)
-            //     ->with('success', 'Pedido criado com sucesso!');
+            return Inertia::render("order/{$order->id}", $order)
+                ->with('success', 'Pedido criado com sucesso!');
 
         } catch (\Exception $e) {
             return back()

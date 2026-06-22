@@ -42,7 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route::get('/orders/checkout', [OrderController::class, 'checkout'])->name('orders.checkout');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::post('/orders/{order}/sync', [OrderController::class, 'sync'])->name('orders.sync');
-    Route::inertia('/orders', 'orders/index')->name('orders-history');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders-history');
 });
 
 require __DIR__ . '/settings.php';

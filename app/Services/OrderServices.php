@@ -31,26 +31,26 @@ class OrderServices
                 'card_number' => $paymentData['card_number'],
                 'cvv' => $paymentData['cvv'],
                 'cart' => $cartItems->map(fn($item) => [
-                    'product_id' => $item->product_id,
-                    'quantity' => $item->cart_item_qt,
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['cart_item_qt'],
                 ])->toArray(),
             ];
 
-            $apiResponse = $this->externalApi->createOrder($apiPayload);
+            $apiResponse = $this->externalApi->createOrder($apiPayload)['data'];
 
             $order = Order::create([
-                'user_id' => $user->id,
-                'external_order_id' => $apiResponse['id'],
-                'external_id' => $apiResponse['external_id'],
-                'gateway_id' => $apiResponse['gateway_id'] ?? null,
-                'order_number' => Order::generateOrderNumber(),
-                'status' => $apiResponse['status'],
-                'amount' => $apiResponse['amount'],
-                'card_last_numbers' => $apiResponse['card_last_numbers'],
-                'order_items' => $apiResponse['order'],
-                'card_number_encrypted' => Crypt::encryptString($paymentData['card_number']),
-                'cvv_encrypted' => Crypt::encryptString($paymentData['cvv']),
-                'api_response' => $apiResponse,
+                'user_id'               => $user->id,
+                'external_order_id'     => $apiResponse['id'],
+                'external_id'           => $apiResponse['external_id'],
+                'gateway_id'            => $apiResponse['gateway_id'],
+                'order_number'          => Order::generateOrderNumber(),
+                'status'                => $apiResponse['status'],
+                'amount'                => $apiResponse['amount'],
+                'card_last_numbers'     => $apiResponse['card_last_numbers'],
+                'order_items'           => $apiResponse['order'],
+                // 'card_number_encrypted' => Crypt::encryptString($paymentData['card_number']),
+                // 'cvv_encrypted'         => Crypt::encryptString($paymentData['cvv']),
+                'api_response'          => $apiResponse,
             ]);
 
             $this->cartService->clearCart($request);
