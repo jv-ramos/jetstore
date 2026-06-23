@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Product;
 use App\Services\OrderServices;
 use App\Services\CartServices;
 use Illuminate\Http\Request;
@@ -17,18 +18,48 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
-        if (! request()->user() && ! request()->session()->has('cart_session')) {
-            return redirect()->route('dashboard')
-                ->with('error', 'Seu carrinho está vazio');
+        if (!$request->user()) {
+            return redirect()->route('dashboard')->with('error', 'Acesso negado');
         }
+
+        $orders = $this->getOrders($request);
+
+        return Inertia::render('orders/index', [
+            'orders' => $orders,
+        ]);
+    }
+
+    public function getOrders(Request $request)
+    {
+        if (!$request->user()) return null;
 
         $orders = Order::where('user_id', $request->user()->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return Inertia::render('orders/index', [
-            'orders' => $orders,
-        ]);
+        // Coleta todos os product_ids de todos os pedidos
+        $productIds = collect($orders->items())
+            ->flatMap(fn($order) => collect($order->order_items)->pluck('product_id'))
+            ->unique()
+            ->values();
+
+        // Busca todos os produtos de uma vez (evita N+1)
+        $products = Product::whereIn('id', $productIds)
+            ->get()
+            ->keyBy('id'); // indexa por id para lookup rápido
+
+        // Injeta os dados do produto em cada order_item
+        $orders->getCollection()->transform(function ($order) use ($products) {
+            $order->order_items = collect($order->order_items)
+                ->map(fn($item) => array_merge($item, [
+                    'product' => $products->get($item['product_id']),
+                ]))
+                ->toArray();
+
+            return $order;
+        });
+
+        return $orders;
     }
 
     public function show(Order $order)
@@ -77,7 +108,6 @@ class OrderController extends Controller
 
             return Inertia::render("order/{$order->id}", $order)
                 ->with('success', 'Pedido criado com sucesso!');
-
         } catch (\Exception $e) {
             return back()
                 ->withInput()

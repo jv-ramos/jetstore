@@ -48,7 +48,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'address' => $request->user() ? Address::where('user_id', $request->user()->id)->first() : null,
                 'cart' => app(CartItemController::class)->getCart($request),
-                'orders' => app(OrderController::class)->index($request),
+                'orders' => app(OrderController::class)->getOrders($request),
             ],
             'products' => fn() => $this->shouldLoadProducts($request)
                 ? app(ProductController::class)->index()
