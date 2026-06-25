@@ -38,7 +38,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('checkout', 'checkout')->name('checkout');
 
     // Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders-details');
     // Route::get('/orders/checkout', [OrderController::class, 'checkout'])->name('orders.checkout');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::post('/orders/{order}/sync', [OrderController::class, 'sync'])->name('orders.sync');

@@ -37,18 +37,15 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        // Coleta todos os product_ids de todos os pedidos
         $productIds = collect($orders->items())
             ->flatMap(fn($order) => collect($order->order_items)->pluck('product_id'))
             ->unique()
             ->values();
 
-        // Busca todos os produtos de uma vez (evita N+1)
         $products = Product::whereIn('id', $productIds)
             ->get()
-            ->keyBy('id'); // indexa por id para lookup rápido
+            ->keyBy('id');
 
-        // Injeta os dados do produto em cada order_item
         $orders->getCollection()->transform(function ($order) use ($products) {
             $order->order_items = collect($order->order_items)
                 ->map(fn($item) => array_merge($item, [
@@ -68,8 +65,8 @@ class OrderController extends Controller
             abort(403);
         }
 
-        return Inertia::render('Orders/Show', [
-            'order' => $order,
+        return Inertia::render('orders/show', [
+            'order' => $this->enrichOrderItems($order),
         ]);
     }
 
@@ -86,6 +83,26 @@ class OrderController extends Controller
             'cartItems' => $cartItems,
             'total' => $cartItems->sum('subtotal'),
         ]);
+    }
+
+    private function enrichOrderItems(Order $order, $products = null)
+    {
+        $items = is_string($order->order_items)
+            ? json_decode($order->order_items, true)
+            : ($order->order_items ?? []);
+
+        if ($products === null) {
+            $productIds = collect($items)->pluck('product_id')->unique();
+            $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+        }
+
+        $order->order_items = collect($items)
+            ->map(fn($item) => array_merge($item, [
+                'product' => $products->get($item['product_id']),
+            ]))
+            ->toArray();
+
+        return $order;
     }
 
     public function store(Request $request)
