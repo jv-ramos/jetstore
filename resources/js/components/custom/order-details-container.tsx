@@ -1,12 +1,10 @@
 import { Heart } from 'lucide-react';
 import { toast } from 'sonner';
 import VerticalCarousel from '@/components/custom/verticalCarousel';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toUrl } from '@/lib/utils';
 import type { NavItem } from '@/types';
-import CounterButton from './counterButton';
 import MainImage from './main-image';
 import MiniatureImage from './miniature-image';
 import { StarRating } from './starRating';
@@ -20,25 +18,19 @@ const pageIcons: NavItem[] = [
     },
 ];
 
-export default function ProductDetailsContainer({
-    handleAddToCart,
-    auth,
+export default function OrderDetailsContainer({
     productFound,
     fakeApiProductFound,
-    counter,
-    handleCounter,
     error,
     loading,
 }: {
-    handleAddToCart: (productId: string, counter: number) => void;
-    auth: any;
     productFound: any;
     fakeApiProductFound: any;
-    counter: number;
-    handleCounter: (operation: boolean) => void;
     error: any;
     loading: boolean;
 }) {
+    console.log(productFound)
+
     return (
         <Card className="w-full border-0 bg-transparent">
             <CardContent className="p-0">
@@ -83,7 +75,7 @@ export default function ProductDetailsContainer({
                                 </div>
                             </div>
 
-                            <div className="m-10 flex flex-col items-start justify-between pb-4">
+                            <div className="my-10 ml-10 flex flex-col items-start justify-between pb-4">
                                 <div>
                                     <h1 className="mb-4 text-2xl font-bold">
                                         {productFound.name}
@@ -112,29 +104,6 @@ export default function ProductDetailsContainer({
                                     <p className="mb-2 text-gray-700">
                                         {productFound.description}
                                     </p>
-                                </div>
-                                <div className="mt-4 flex w-full items-center">
-                                    <CounterButton
-                                        buttonId={productFound.id}
-                                        counter={counter}
-                                        handleCounter={handleCounter}
-                                    />
-                                    <Button
-                                        variant="outline"
-                                        className="bg-purple ml-4 w-full hover:bg-[#ae6ff7]"
-                                        onClick={() => {
-                                            handleAddToCart(
-                                                productFound.id,
-                                                counter,
-                                            );
-
-                                            if (auth.user) {
-                                                toast('Product added to cart!');
-                                            }
-                                        }}
-                                    >
-                                        Add to Cart
-                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -175,19 +144,6 @@ export default function ProductDetailsContainer({
                                 <Skeleton className="mb-2 h-4 w-full rounded" />
                                 <Skeleton className="mb-2 h-4 w-full rounded" />
                             </div>
-                            <div className="mt-4 flex w-full items-center">
-                                <CounterButton
-                                    counter={counter}
-                                    handleCounter={() => {}}
-                                />
-                                <Button
-                                    variant="outline"
-                                    className="bg-purple ml-4 w-full hover:bg-[#ae6ff7]"
-                                    disabled
-                                >
-                                    Add to Cart
-                                </Button>
-                            </div>
                         </div>
                     </div>
                 )}
@@ -195,3 +151,4 @@ export default function ProductDetailsContainer({
         </Card>
     );
 }
+

@@ -12,4 +12,4 @@ Artisan::command('inspire', function () {
 Schedule::call(function () {
     PromotionServices::endExpiredPromotions();
     PromotionServices::makeDailyPromotion();
-})->daily();
+})->everyThirtyMinutes();

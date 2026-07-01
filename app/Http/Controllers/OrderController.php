@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Product;
 use App\Services\OrderServices;
 use App\Services\CartServices;
 use Illuminate\Http\Request;
@@ -17,11 +18,45 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
+        if (!$request->user()) {
+            return redirect()->route('dashboard')->with('error', 'Acesso negado');
+        }
+
+        $orders = $this->getOrders($request);
+
+        return Inertia::render('orders/index', [
+            'orders' => $orders,
+        ]);
+    }
+
+    public function getOrders(Request $request)
+    {
+        if (!$request->user()) return null;
+
         $orders = Order::where('user_id', $request->user()->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return Inertia::render('/dashboard');
+        $productIds = collect($orders->items())
+            ->flatMap(fn($order) => collect($order->order_items)->pluck('product_id'))
+            ->unique()
+            ->values();
+
+        $products = Product::whereIn('id', $productIds)
+            ->get()
+            ->keyBy('id');
+
+        $orders->getCollection()->transform(function ($order) use ($products) {
+            $order->order_items = collect($order->order_items)
+                ->map(fn($item) => array_merge($item, [
+                    'product' => $products->get($item['product_id']),
+                ]))
+                ->toArray();
+
+            return $order;
+        });
+
+        return $orders;
     }
 
     public function show(Order $order)
@@ -30,8 +65,8 @@ class OrderController extends Controller
             abort(403);
         }
 
-        return Inertia::render('Orders/Show', [
-            'order' => $order,
+        return Inertia::render('orders/show', [
+            'order' => $this->enrichOrderItems($order),
         ]);
     }
 
@@ -48,6 +83,26 @@ class OrderController extends Controller
             'cartItems' => $cartItems,
             'total' => $cartItems->sum('subtotal'),
         ]);
+    }
+
+    private function enrichOrderItems(Order $order, $products = null)
+    {
+        $items = is_string($order->order_items)
+            ? json_decode($order->order_items, true)
+            : ($order->order_items ?? []);
+
+        if ($products === null) {
+            $productIds = collect($items)->pluck('product_id')->unique();
+            $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+        }
+
+        $order->order_items = collect($items)
+            ->map(fn($item) => array_merge($item, [
+                'product' => $products->get($item['product_id']),
+            ]))
+            ->toArray();
+
+        return $order;
     }
 
     public function store(Request $request)
@@ -68,9 +123,8 @@ class OrderController extends Controller
                 $order->update(['notes' => $validated['notes']]);
             }
 
-            // return redirect()->route('orders.show', $order)
-            //     ->with('success', 'Pedido criado com sucesso!');
-
+            return Inertia::render("order/{$order->id}", $order)
+                ->with('success', 'Pedido criado com sucesso!');
         } catch (\Exception $e) {
             return back()
                 ->withInput()

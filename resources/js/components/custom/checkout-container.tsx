@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
+import { itemPriceWithDiscount, subtotal } from '@/services/helpers';
 
 export default function CheckoutContainer({
     cart,
@@ -16,7 +17,20 @@ export default function CheckoutContainer({
     loadingCep,
     handleCepBlur,
     formatCep,
+}: {
+    cart: any;
+    data: any;
+    setData: any;
+    post: any;
+    processing: boolean;
+    errors: any;
+    cepError: string | null;
+    loadingCep: boolean;
+    handleCepBlur: () => void;
+    formatCep: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
+    console.log(cart);
+
     return (
         <>
             <div className="flex h-full w-full flex-1 flex-col rounded-xl p-4">
@@ -325,48 +339,53 @@ export default function CheckoutContainer({
                                         Order Summary
                                     </h1>
                                     <div className="flex h-[min-content] w-full flex-col items-start justify-start">
-                                        {cart.items.map((product: any) => (
-                                            <div
-                                                key={product.id}
-                                                className="flex w-full items-center justify-between"
-                                            >
-                                                <div className="flex w-1/6 items-center justify-center">
-                                                    <img
-                                                        src={
-                                                            product.product
-                                                                .image
-                                                        }
-                                                        alt={
-                                                            product.product.name
-                                                        }
-                                                        className="max-h-10 max-w-10 object-contain p-1 drop-shadow-[0_8px_12px_rgba(0,0,0,0.25)]"
-                                                    />
+                                        {cart.items.map(
+                                            (product: any, index: any) => (
+                                                <div
+                                                    key={product.id}
+                                                    className="flex w-full items-center justify-between"
+                                                >
+                                                    <div className="flex w-1/6 items-center justify-center">
+                                                        <img
+                                                            src={
+                                                                product.product
+                                                                    .image
+                                                            }
+                                                            alt={
+                                                                product.product
+                                                                    .name
+                                                            }
+                                                            className="max-h-10 max-w-10 object-contain p-1 drop-shadow-[0_8px_12px_rgba(0,0,0,0.25)]"
+                                                        />
+                                                    </div>
+                                                    <div className="ml-4 w-5/6">
+                                                        <p className="text-sm font-bold">
+                                                            {product.product.name?.slice(
+                                                                0,
+                                                                25,
+                                                            ) +
+                                                                (product.product
+                                                                    .name
+                                                                    .length > 25
+                                                                    ? '...'
+                                                                    : '')}{' '}
+                                                        </p>
+                                                    </div>
+                                                    <div className="align-center ml-4 flex w-1/6 justify-end">
+                                                        <p className="text-sm font-bold">
+                                                            $
+                                                            {itemPriceWithDiscount(
+                                                                product.product,
+                                                                product.cart_item_qt,
+                                                                cart.promotion[
+                                                                    index
+                                                                ],
+                                                            )}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                                <div className="ml-4 w-5/6">
-                                                    <p className="text-sm font-bold">
-                                                        {product.product.name?.slice(
-                                                            0,
-                                                            25,
-                                                        ) +
-                                                            (product.product
-                                                                .name.length >
-                                                            25
-                                                                ? '...'
-                                                                : '')}{' '}
-                                                    </p>
-                                                </div>
-                                                <div className="align-center ml-4 flex w-1/6 justify-end">
-                                                    <p className="text-sm font-bold">
-                                                        $
-                                                        {(
-                                                            product.product
-                                                                .amount *
-                                                            product.cart_item_qt
-                                                        ).toFixed(2)}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        ))}
+                                            ),
+                                        )}
                                     </div>
                                     <div className="w-full items-center justify-between">
                                         <div className="mt-4 flex w-full items-center justify-between">
@@ -374,7 +393,7 @@ export default function CheckoutContainer({
                                                 Subtotal
                                             </p>
                                             <p className="text-sm font-bold">
-                                                ${cart.total.toFixed(2)}
+                                                ${subtotal(cart, cart.items)}
                                             </p>
                                         </div>
                                         <div className="mt-4 flex w-full items-center justify-between">
@@ -401,7 +420,7 @@ export default function CheckoutContainer({
                                             Total
                                         </p>
                                         <p className="text-xl font-bold text-[#ae6ff7]">
-                                            ${cart.total.toFixed(2)}
+                                            ${subtotal(cart, cart.items)}
                                         </p>
                                     </div>
                                     <div className="mt-4 flex w-full items-center justify-between">

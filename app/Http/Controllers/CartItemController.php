@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DTOs\cartDTO;
 use App\Services\CartServices;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -26,7 +27,6 @@ class CartItemController extends Controller
             'product_id' => 'required|exists:products,id',
             'cart_item_qt' => 'integer|min:1',
         ]);
-        echo $validated['product_id'];
 
         $this->cartService->addItem(
             $request,
@@ -35,6 +35,18 @@ class CartItemController extends Controller
         );
 
         return back()->with('success', 'Produto adicionado ao carrinho');
+    }
+
+    public function getCart(Request $request): cartDTO
+    {
+        $dto = new cartDTO(
+            items: $this->cartService->getCart($request),
+            total: $this->cartService->getTotal($request),
+            count: $this->cartService->getCount($request),
+            promotion: $this->cartService->getPromotion($request),
+        );
+
+        return $dto;
     }
 
     public function update(Request $request, int $productId)

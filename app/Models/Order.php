@@ -33,6 +33,11 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function product()
+    {
+        return $this->hasMany(Product::class);
+    }
+
     public static function generateOrderNumber()
     {
         $year = now()->year;
