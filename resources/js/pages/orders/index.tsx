@@ -14,7 +14,7 @@ export default function OrderHistory() {
                     </p>
                 ) : (
                     <>
-                        <div className="align-center m-8 flex justify-center">
+                        <div className="align-center m-8 flex flex-col justify-center gap-4">
                             {items.map((order: any) => (
                                 <div key={order.id}>
                                     {order.order_items.map(
